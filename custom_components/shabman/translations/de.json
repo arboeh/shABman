@@ -2,8 +2,8 @@
   "config": {
     "step": {
       "user": {
-        "title": "shABman einrichten",
-        "description": "Geben Sie die IP-Adresse Ihres Shelly Gen2+ Geräts ein",
+        "title": "shABman Einrichtung",
+        "description": "Geben Sie die IP-Adresse Ihres Shelly BLU Gateway ein",
         "data": {
           "device_ip": "Geräte IP-Adresse"
         }
@@ -11,11 +11,67 @@
     },
     "error": {
       "cannot_connect": "Verbindung zum Gerät fehlgeschlagen",
-      "unsupported_device": "Gerät unterstützt kein Scripting (Gen2+ erforderlich)",
-      "unknown": "Unerwarteter Fehler aufgetreten"
+      "unsupported_device": "Gerätetyp wird nicht unterstützt",
+      "unknown": "Unerwarteter Fehler"
     },
     "abort": {
       "already_configured": "Gerät ist bereits konfiguriert"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Script Manager",
+        "menu_options": {
+          "upload_script": "Neues Script hochladen",
+          "delete_script": "Script löschen",
+          "list_scripts": "Scripts anzeigen"
+        }
+      },
+      "upload_script": {
+        "title": "Script hochladen",
+        "description": "Geben Sie Script-Name und Code ein",
+        "data": {
+          "name": "Script-Name",
+          "code": "Script-Code"
+        }
+      },
+      "delete_script": {
+        "title": "Script löschen",
+        "description": "Wählen Sie ein Script zum Löschen aus",
+        "data": {
+          "script": "Script"
+        }
+      },
+      "confirm_delete": {
+        "title": "Löschen bestätigen",
+        "description": "Möchten Sie Script ID {script_id} wirklich löschen?",
+        "data": {
+          "confirm": "Löschen bestätigen"
+        }
+      },
+      "list_scripts": {
+        "title": "Scripts anzeigen",
+        "description": "Wählen Sie ein Script aus, um Details anzuzeigen",
+        "data": {
+          "script": "Script"
+        }
+      },
+      "show_script": {
+        "title": "Script: {script_name}",
+        "description": "ID: {script_id} | Aktiviert: {enabled} | Läuft: {running}",
+        "data": {
+          "code": "Script-Code"
+        }
+      }
+    },
+    "error": {
+      "upload_failed": "Script konnte nicht hochgeladen werden",
+      "delete_failed": "Script konnte nicht gelöscht werden"
+    },
+    "abort": {
+      "no_scripts": "Keine Scripts auf dem Gerät gefunden",
+      "script_not_found": "Script nicht gefunden"
     }
   }
 }

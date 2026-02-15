@@ -1,0 +1,59 @@
+upload_script:
+  name: Upload script
+  description: Upload a script to the shABman device
+  fields:
+    device_id:
+      name: Device ID
+      description: The device ID (e.g., shellyblugw-b0b21cfbf9a8)
+      required: true
+      example: "shellyblugw-b0b21cfbf9a8"
+      selector:
+        text:
+    name:
+      name: Script name
+      description: Name of the script
+      required: true
+      example: "my_script"
+      selector:
+        text:
+    code:
+      name: Script code
+      description: The script code
+      required: true
+      example: "print('Hello');"
+      selector:
+        text:
+          multiline: true
+
+delete_script:
+  name: Delete script
+  description: Delete a script from the shABman device
+  fields:
+    device_id:
+      name: Device ID
+      description: The device ID (e.g., shellyblugw-b0b21cfbf9a8)
+      required: true
+      example: "shellyblugw-b0b21cfbf9a8"
+      selector:
+        text:
+    script_id:
+      name: Script ID
+      description: ID of the script to delete
+      required: true
+      example: 1
+      selector:
+        number:
+          min: 1
+          mode: box
+
+list_scripts:
+  name: List scripts
+  description: List all scripts on the shABman device
+  fields:
+    device_id:
+      name: Device ID
+      description: The device ID (e.g., shellyblugw-b0b21cfbf9a8)
+      required: true
+      example: "shellyblugw-b0b21cfbf9a8"
+      selector:
+        text:
