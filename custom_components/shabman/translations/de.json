@@ -1,0 +1,21 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "shABman einrichten",
+        "description": "Geben Sie die IP-Adresse Ihres Shelly Gen2+ Geräts ein",
+        "data": {
+          "device_ip": "Geräte IP-Adresse"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbindung zum Gerät fehlgeschlagen",
+      "unsupported_device": "Gerät unterstützt kein Scripting (Gen2+ erforderlich)",
+      "unknown": "Unerwarteter Fehler aufgetreten"
+    },
+    "abort": {
+      "already_configured": "Gerät ist bereits konfiguriert"
+    }
+  }
+}

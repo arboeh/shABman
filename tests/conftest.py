@@ -1,9 +1,22 @@
 """Fixtures for shABman tests."""
-import pytest
-from unittest.mock import patch, MagicMock
-from homeassistant.core import HomeAssistant
 
-pytest_plugins = "pytest_homeassistant_custom_component"
+import os
+import sys
+from unittest.mock import MagicMock, Mock, patch
+
+import pytest
+
+# Setze Timezone VOR allen Imports
+os.environ["TZ"] = "UTC"
+
+# Monkey-patch pytest_socket BEVOR pytest_homeassistant_custom_component geladen wird
+import pytest_socket
+
+pytest_socket.disable_socket = Mock()
+pytest_socket.socket_allow_hosts = Mock()
+
+# Jetzt erst pytest_homeassistant_custom_component laden
+pytest_plugins = ["pytest_homeassistant_custom_component"]
 
 
 @pytest.fixture(autouse=True)
@@ -45,10 +58,3 @@ def mock_scripts_list():
             },
         ]
     }
-
-
-@pytest.fixture
-async def mock_aiohttp_client():
-    """Mock aiohttp ClientSession."""
-    with patch("aiohttp.ClientSession") as mock_session:
-        yield mock_session

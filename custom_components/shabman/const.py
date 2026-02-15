@@ -1,6 +1,6 @@
 """Constants for the shABman integration."""
 
-DOMAIN = "shABman"
+DOMAIN = "shabman"
 CONF_DEVICE_IP = "device_ip"
 CONF_DEVICE_TYPE = "device_type"
 
