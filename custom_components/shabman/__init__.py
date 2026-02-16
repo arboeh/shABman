@@ -55,6 +55,11 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up shABman from a config entry."""
+    # Prevent double setup (important for tests)
+    if entry.entry_id in hass.data.get(DOMAIN, {}):
+        _LOGGER.debug("Entry %s already set up, skipping", entry.entry_id)
+        return True
+
     hass.data.setdefault(DOMAIN, {})
 
     coordinator = ShABmanCoordinator(hass, entry)
@@ -167,34 +172,40 @@ def _register_services(hass: HomeAssistant) -> None:
     _LOGGER.info("Registered shABman services")
 
 
-def _find_coordinator_by_device_id(hass: HomeAssistant, device_id: str) -> ShABmanCoordinator | None:
+def _find_coordinator_by_device_id(hass: HomeAssistant, device_id: str):
     """Find coordinator by device_id."""
-    for coordinator in hass.data[DOMAIN].values():
-        if isinstance(coordinator, ShABmanCoordinator):
-            if coordinator.config_entry.data.get("device_id") == device_id:
-                return coordinator
+    for entry_id, coordinator in hass.data[DOMAIN].items():
+        # Use device_id stored in coordinator
+        if hasattr(coordinator, "device_id") and coordinator.device_id == device_id:
+            return coordinator
+        # Fallback: check config_entry
+        if coordinator.config_entry and coordinator.config_entry.data.get("device_id") == device_id:
+            return coordinator
     return None
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
+    # Check if entry exists in hass.data
+    if entry.entry_id not in hass.data.get(DOMAIN, {}):
+        _LOGGER.warning("Entry %s not found in hass.data, skipping unload", entry.entry_id)
+        return True
+
     coordinator = hass.data[DOMAIN][entry.entry_id]
 
-    # Shutdown WebSocket
-    await coordinator.async_shutdown()  # 🔥 NEU
+    # Cancel WebSocket task
+    if hasattr(coordinator, "_ws_task") and coordinator._ws_task:
+        coordinator._ws_task.cancel()
+        try:
+            await coordinator._ws_task
+        except Exception as e:
+            _LOGGER.debug("Error canceling WebSocket task: %s", e)
 
-    # Unload platforms first
+    # Unload platforms
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id)
-
-        # Only unregister services if no more entries exist
-        if not hass.data[DOMAIN]:
-            hass.services.async_remove(DOMAIN, SERVICE_UPLOAD_SCRIPT)
-            hass.services.async_remove(DOMAIN, SERVICE_DELETE_SCRIPT)
-            hass.services.async_remove(DOMAIN, SERVICE_LIST_SCRIPTS)
-            _LOGGER.info("Unregistered shABman services")
 
     return unload_ok
 

@@ -8,8 +8,6 @@ from datetime import timedelta
 
 import aiohttp
 from aiohttp import WSMsgType
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import CONF_DEVICE_IP, CONF_DEVICE_TYPE, DOMAIN
@@ -20,11 +18,18 @@ _LOGGER = logging.getLogger(__name__)
 class ShABmanCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the Shelly device."""
 
-    def __init__(self, hass: HomeAssistant, entry: ConfigEntry) -> None:
+    def __init__(self, hass, config_entry):
         """Initialize the coordinator."""
-        self.config_entry = entry
-        self.device_ip = entry.data[CONF_DEVICE_IP]
-        self.device_type = entry.data.get(CONF_DEVICE_TYPE, "unknown")
+        super().__init__(
+            hass,
+            _LOGGER,
+            name="shabman",
+            update_interval=timedelta(seconds=30),
+        )
+        self.device_ip = config_entry.data[CONF_DEVICE_IP]
+        self.device_type = config_entry.data[CONF_DEVICE_TYPE]
+        self.device_id = config_entry.data.get("device_id")  # <-- NEU!
+        self.config_entry = config_entry
 
         self._ws_task = None  # WebSocket listener task
         self._ws_session = None
