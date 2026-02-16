@@ -3,9 +3,7 @@
   "content_in_root": false,
   "filename": "shABman",
   "render_readme": true,
-  "domains": [
-    "shABman"
-  ],
+  "domains": ["shABman"],
   "homeassistant": "2024.1.0",
   "iot_class": "Local Polling"
 }

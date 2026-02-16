@@ -21,16 +21,31 @@
   "options": {
     "step": {
       "init": {
-        "title": "Script Manager",
+        "title": "shABman Script Manager",
         "menu_options": {
-          "upload_script": "Neues Script hochladen",
-          "delete_script": "Script löschen",
-          "list_scripts": "Scripts anzeigen"
+          "create_script": "📤 Neues Script erstellen",
+          "manage_scripts": "✏️ Scripts verwalten",
+          "delete_script": "🗑️ Script löschen"
         }
       },
-      "upload_script": {
-        "title": "Script hochladen",
+      "create_script": {
+        "title": "Script erstellen",
         "description": "Geben Sie Script-Name und Code ein",
+        "data": {
+          "name": "Script-Name",
+          "code": "Script-Code"
+        }
+      },
+      "manage_scripts": {
+        "title": "Script auswählen",
+        "description": "Wählen Sie ein Script zum Bearbeiten",
+        "data": {
+          "script": "Script"
+        }
+      },
+      "edit_script": {
+        "title": "Script bearbeiten",
+        "description": "ID: {script_id} | Aktiviert: {enabled} | Läuft: {running}",
         "data": {
           "name": "Script-Name",
           "code": "Script-Code"
@@ -38,35 +53,22 @@
       },
       "delete_script": {
         "title": "Script löschen",
-        "description": "Wählen Sie ein Script zum Löschen aus",
+        "description": "Wählen Sie ein Script zum Löschen",
         "data": {
           "script": "Script"
         }
       },
       "confirm_delete": {
         "title": "Löschen bestätigen",
-        "description": "Möchten Sie Script ID {script_id} wirklich löschen?",
-        "data": {
-          "confirm": "Löschen bestätigen"
-        }
-      },
-      "list_scripts": {
-        "title": "Scripts anzeigen",
-        "description": "Wählen Sie ein Script aus, um Details anzuzeigen",
-        "data": {
-          "script": "Script"
-        }
-      },
-      "show_script": {
-        "title": "Script: {script_name}",
-        "description": "ID: {script_id} | Aktiviert: {enabled} | Läuft: {running}",
-        "data": {
-          "code": "Script-Code"
-        }
+        "description": "Möchten Sie Script '{script_name}' (ID: {script_id}) wirklich löschen?",
+        "data": {}
       }
     },
     "error": {
       "upload_failed": "Script konnte nicht hochgeladen werden",
+      "update_failed": "Alte Script-Version konnte nicht gelöscht werden",
+      "update_failed_restored": "Update fehlgeschlagen, aber Original-Script wurde wiederhergestellt",
+      "update_failed_lost": "KRITISCH: Update fehlgeschlagen und Original-Script konnte nicht wiederhergestellt werden! Prüfen Sie die Logs für Backup-Daten.",
       "delete_failed": "Script konnte nicht gelöscht werden"
     },
     "abort": {

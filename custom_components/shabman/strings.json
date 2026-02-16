@@ -21,16 +21,31 @@
   "options": {
     "step": {
       "init": {
-        "title": "Script Manager",
+        "title": "shABman Script Manager",
         "menu_options": {
-          "upload_script": "Upload new script",
-          "delete_script": "Delete script",
-          "list_scripts": "View scripts"
+          "create_script": "📤 Create new script",
+          "manage_scripts": "✏️ Manage scripts",
+          "delete_script": "🗑️ Delete script"
         }
       },
-      "upload_script": {
-        "title": "Upload Script",
+      "create_script": {
+        "title": "Create Script",
         "description": "Enter script name and code",
+        "data": {
+          "name": "Script Name",
+          "code": "Script Code"
+        }
+      },
+      "manage_scripts": {
+        "title": "Select Script",
+        "description": "Choose a script to edit",
+        "data": {
+          "script": "Script"
+        }
+      },
+      "edit_script": {
+        "title": "Edit Script",
+        "description": "ID: {script_id} | Enabled: {enabled} | Running: {running}",
         "data": {
           "name": "Script Name",
           "code": "Script Code"
@@ -45,28 +60,15 @@
       },
       "confirm_delete": {
         "title": "Confirm Deletion",
-        "description": "Are you sure you want to delete script ID {script_id}?",
-        "data": {
-          "confirm": "Confirm deletion"
-        }
-      },
-      "list_scripts": {
-        "title": "View Scripts",
-        "description": "Select a script to view details",
-        "data": {
-          "script": "Script"
-        }
-      },
-      "show_script": {
-        "title": "Script: {script_name}",
-        "description": "ID: {script_id} | Enabled: {enabled} | Running: {running}",
-        "data": {
-          "code": "Script Code"
-        }
+        "description": "Do you really want to delete script '{script_name}' (ID: {script_id})?",
+        "data": {}
       }
     },
     "error": {
       "upload_failed": "Failed to upload script",
+      "update_failed": "Failed to delete old script version",
+      "update_failed_restored": "Update failed, but original script was restored successfully",
+      "update_failed_lost": "CRITICAL: Update failed and original script could not be restored! Check logs for backup data.",
       "delete_failed": "Failed to delete script"
     },
     "abort": {

@@ -1,3 +1,5 @@
+# .github/workflows/validate.yaml
+
 name: Validate
 
 on:
@@ -14,11 +16,11 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      
+
       - name: HACS Validation
         uses: hacs/action@main
         with:
           category: integration
-      
+
       - name: Hassfest Validation
         uses: home-assistant/actions/hassfest@master

@@ -1,3 +1,5 @@
+# custom_components\shabman\services.yaml
+
 upload_script:
   name: Upload script
   description: Upload a script to the shABman device
@@ -6,14 +8,14 @@ upload_script:
       name: Device ID
       description: The device ID (e.g., shellyblugw-b0b21cfbf9a8)
       required: true
-      example: "shellyblugw-b0b21cfbf9a8"
+      example: 'shellyblugw-b0b21cfbf9a8'
       selector:
         text:
     name:
       name: Script name
       description: Name of the script
       required: true
-      example: "my_script"
+      example: 'my_script'
       selector:
         text:
     code:
@@ -33,7 +35,7 @@ delete_script:
       name: Device ID
       description: The device ID (e.g., shellyblugw-b0b21cfbf9a8)
       required: true
-      example: "shellyblugw-b0b21cfbf9a8"
+      example: 'shellyblugw-b0b21cfbf9a8'
       selector:
         text:
     script_id:
@@ -54,6 +56,6 @@ list_scripts:
       name: Device ID
       description: The device ID (e.g., shellyblugw-b0b21cfbf9a8)
       required: true
-      example: "shellyblugw-b0b21cfbf9a8"
+      example: 'shellyblugw-b0b21cfbf9a8'
       selector:
         text:

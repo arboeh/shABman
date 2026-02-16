@@ -1,16 +1,15 @@
+# tests/conftest.py
+
 """Fixtures for shABman tests."""
 
 import os
-import sys
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock
 
 import pytest
+import pytest_socket
 
 # Setze Timezone VOR allen Imports
 os.environ["TZ"] = "UTC"
-
-# Monkey-patch pytest_socket BEVOR pytest_homeassistant_custom_component geladen wird
-import pytest_socket
 
 pytest_socket.disable_socket = Mock()
 pytest_socket.socket_allow_hosts = Mock()

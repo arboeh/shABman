@@ -1,6 +1,6 @@
 [run]
 source = custom_components.shabman
-omit = 
+omit =
     */tests/*
     */test_*.py
 
