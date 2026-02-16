@@ -6,8 +6,8 @@ import uuid
 from unittest.mock import patch
 
 import pytest
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.shabman import async_setup_entry, async_unload_entry
 from custom_components.shabman.const import CONF_DEVICE_IP, CONF_DEVICE_TYPE, DOMAIN
@@ -84,9 +84,8 @@ async def setup_integration(hass: HomeAssistant, mock_scripts_list):
     # Create unique ID for each test
     unique_id = str(uuid.uuid4())
 
-    entry = ConfigEntry(
-        version=1,
-        minor_version=0,
+    # Verwende MockConfigEntry statt ConfigEntry!
+    entry = MockConfigEntry(
         domain=DOMAIN,
         title="Test Shelly",
         data={
@@ -94,19 +93,11 @@ async def setup_integration(hass: HomeAssistant, mock_scripts_list):
             CONF_DEVICE_TYPE: "SNSW-001X16EU",
             "device_id": f"test_{unique_id}",
         },
-        source="user",
         unique_id=unique_id,
     )
+    entry.add_to_hass(hass)
 
-    # Register entry in hass
-    hass.config_entries._entries[entry.entry_id] = entry
-
-    # Mock websocket listener to prevent it from actually running
-    async def mock_websocket_listener():
-        """Mock websocket listener that does nothing."""
-        pass
-
-    # Mock coordinator methods with proper return data
+    # Mock nur die API calls, NICHT die Platform-Setups!
     with patch(
         "custom_components.shabman.coordinator.ShABmanCoordinator.list_scripts",
         return_value=mock_scripts_list["scripts"],
@@ -120,15 +111,14 @@ async def setup_integration(hass: HomeAssistant, mock_scripts_list):
         },
     ), patch(
         "custom_components.shabman.coordinator.ShABmanCoordinator._websocket_listener",
-        side_effect=mock_websocket_listener,
+        return_value=None,  # Mock to prevent actual WebSocket connection
     ):
-        # Setup the integration
+        # Setup the integration - Das lädt die echten Platforms!
         result = await async_setup_entry(hass, entry)
         assert result is True
         await hass.async_block_till_done()
 
-    # WICHTIG: yield MUSS hier sein!
-    yield entry
+        yield entry
 
     # Cleanup
     if entry.entry_id in hass.data.get(DOMAIN, {}):

@@ -5,9 +5,9 @@
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import UpdateFailed
+from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.shabman.const import CONF_DEVICE_IP, CONF_DEVICE_TYPE, DOMAIN
 from custom_components.shabman.coordinator import ShABmanCoordinator
@@ -17,7 +17,7 @@ from custom_components.shabman.coordinator import ShABmanCoordinator
 
 async def test_coordinator_update(hass: HomeAssistant, mock_scripts_list):
     """Test coordinator update."""
-    entry = ConfigEntry(
+    entry = MockConfigEntry(
         version=1,
         minor_version=0,
         domain=DOMAIN,
@@ -42,7 +42,7 @@ async def test_coordinator_update(hass: HomeAssistant, mock_scripts_list):
 
 async def test_coordinator_update_failed(hass: HomeAssistant):
     """Test coordinator update failure."""
-    entry = ConfigEntry(
+    entry = MockConfigEntry(
         version=1,
         minor_version=0,
         domain=DOMAIN,
@@ -68,7 +68,7 @@ async def test_coordinator_update_failed(hass: HomeAssistant):
 
 async def test_list_scripts_success(hass: HomeAssistant):
     """Test listing scripts successfully."""
-    entry = ConfigEntry(
+    entry = MockConfigEntry(
         version=1,
         minor_version=0,
         domain=DOMAIN,
@@ -118,7 +118,7 @@ async def test_list_scripts_success(hass: HomeAssistant):
 
 async def test_get_script_code_success(hass: HomeAssistant):
     """Test getting script code successfully."""
-    entry = ConfigEntry(
+    entry = MockConfigEntry(
         version=1,
         minor_version=0,
         domain=DOMAIN,
@@ -159,7 +159,7 @@ async def test_get_script_code_success(hass: HomeAssistant):
 
 async def test_start_script(hass: HomeAssistant):
     """Test starting a script."""
-    entry = ConfigEntry(
+    entry = MockConfigEntry(
         version=1,
         minor_version=0,
         domain=DOMAIN,
@@ -199,7 +199,7 @@ async def test_start_script(hass: HomeAssistant):
 
 async def test_stop_script(hass: HomeAssistant):
     """Test stopping a script."""
-    entry = ConfigEntry(
+    entry = MockConfigEntry(
         version=1,
         minor_version=0,
         domain=DOMAIN,
@@ -239,7 +239,7 @@ async def test_stop_script(hass: HomeAssistant):
 
 async def test_upload_script(hass: HomeAssistant):
     """Test script upload."""
-    entry = ConfigEntry(
+    entry = MockConfigEntry(
         version=1,
         minor_version=0,
         domain=DOMAIN,
@@ -287,7 +287,7 @@ async def test_upload_script(hass: HomeAssistant):
 
 async def test_delete_script(hass: HomeAssistant):
     """Test script deletion."""
-    entry = ConfigEntry(
+    entry = MockConfigEntry(
         version=1,
         minor_version=0,
         domain=DOMAIN,
@@ -326,7 +326,7 @@ async def test_delete_script(hass: HomeAssistant):
 
 async def test_set_script_config(hass: HomeAssistant):
     """Test setting script configuration (autostart)."""
-    entry = ConfigEntry(
+    entry = MockConfigEntry(
         version=1,
         minor_version=0,
         domain=DOMAIN,

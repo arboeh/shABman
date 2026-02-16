@@ -5,10 +5,10 @@
 from unittest.mock import patch
 
 import pytest
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
+from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.shabman import async_setup_entry, async_unload_entry
 from custom_components.shabman.const import CONF_DEVICE_IP, CONF_DEVICE_TYPE, DOMAIN
@@ -17,7 +17,7 @@ from custom_components.shabman.const import CONF_DEVICE_IP, CONF_DEVICE_TYPE, DO
 @pytest.fixture
 async def setup_switch_platform(hass: HomeAssistant, mock_scripts_list):
     """Set up switch platform."""
-    entry = ConfigEntry(
+    entry = MockConfigEntry(
         version=1,
         minor_version=0,
         domain=DOMAIN,
