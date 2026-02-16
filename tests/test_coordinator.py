@@ -2,7 +2,7 @@
 
 """Test the shABman coordinator."""
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 from homeassistant.core import HomeAssistant
@@ -12,14 +12,11 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 from custom_components.shabman.const import CONF_DEVICE_IP, CONF_DEVICE_TYPE, DOMAIN
 from custom_components.shabman.coordinator import ShABmanCoordinator
 
-# ===== Coordinator Tests =====
 
-
-async def test_coordinator_update(hass: HomeAssistant, mock_scripts_list):
-    """Test coordinator update."""
+@pytest.fixture
+def mock_config_entry(hass):
+    """Create a mock config entry."""
     entry = MockConfigEntry(
-        version=1,
-        minor_version=0,
         domain=DOMAIN,
         title="Test Shelly",
         data={
@@ -27,11 +24,18 @@ async def test_coordinator_update(hass: HomeAssistant, mock_scripts_list):
             CONF_DEVICE_TYPE: "SNSW-001X16EU",
             "device_id": "test123",
         },
-        source="user",
         unique_id="test123",
     )
+    entry.add_to_hass(hass)  # <-- WICHTIG!
+    return entry
 
-    coordinator = ShABmanCoordinator(hass, entry)
+
+# ===== Coordinator Tests =====
+
+
+async def test_coordinator_update(hass: HomeAssistant, mock_config_entry, mock_scripts_list):
+    """Test coordinator update."""
+    coordinator = ShABmanCoordinator(hass, mock_config_entry)
 
     with patch.object(coordinator, "list_scripts", return_value=mock_scripts_list["scripts"]):
         await coordinator.async_config_entry_first_refresh()
@@ -40,23 +44,9 @@ async def test_coordinator_update(hass: HomeAssistant, mock_scripts_list):
         assert len(coordinator.data["scripts"]) == 2
 
 
-async def test_coordinator_update_failed(hass: HomeAssistant):
+async def test_coordinator_update_failed(hass: HomeAssistant, mock_config_entry):
     """Test coordinator update failure."""
-    entry = MockConfigEntry(
-        version=1,
-        minor_version=0,
-        domain=DOMAIN,
-        title="Test Shelly",
-        data={
-            CONF_DEVICE_IP: "192.168.1.100",
-            CONF_DEVICE_TYPE: "SNSW-001X16EU",
-            "device_id": "test123",
-        },
-        source="user",
-        unique_id="test123",
-    )
-
-    coordinator = ShABmanCoordinator(hass, entry)
+    coordinator = ShABmanCoordinator(hass, mock_config_entry)
 
     with patch.object(coordinator, "list_scripts", side_effect=Exception("Connection error")):
         with pytest.raises(UpdateFailed):
@@ -66,49 +56,16 @@ async def test_coordinator_update_failed(hass: HomeAssistant):
 # ===== HTTP Request Tests =====
 
 
-async def test_list_scripts_success(hass: HomeAssistant):
+async def test_list_scripts_success(hass: HomeAssistant, mock_config_entry):
     """Test listing scripts successfully."""
-    entry = MockConfigEntry(
-        version=1,
-        minor_version=0,
-        domain=DOMAIN,
-        title="Test Shelly",
-        data={
-            CONF_DEVICE_IP: "192.168.1.100",
-            CONF_DEVICE_TYPE: "SNSW-001X16EU",
-            "device_id": "test123",
-        },
-        source="user",
-        unique_id="test123",
-    )
+    coordinator = ShABmanCoordinator(hass, mock_config_entry)
 
-    coordinator = ShABmanCoordinator(hass, entry)
+    mock_scripts = [
+        {"id": 1, "name": "test1", "enable": True, "running": False},
+        {"id": 2, "name": "test2", "enable": False, "running": False},
+    ]
 
-    # Mock response
-    mock_response = AsyncMock()
-    mock_response.status = 200
-    mock_response.json = AsyncMock(
-        return_value={
-            "scripts": [
-                {"id": 1, "name": "test1", "enable": True},
-                {"id": 2, "name": "test2", "enable": False},
-            ]
-        }
-    )
-
-    # Mock session.get() context manager
-    mock_get_ctx = MagicMock()
-    mock_get_ctx.__aenter__ = AsyncMock(return_value=mock_response)
-    mock_get_ctx.__aexit__ = AsyncMock(return_value=None)
-
-    # Mock session context manager
-    mock_session = MagicMock()
-    mock_session.get = MagicMock(return_value=mock_get_ctx)
-    mock_session.__aenter__ = AsyncMock(return_value=mock_session)
-    mock_session.__aexit__ = AsyncMock(return_value=None)
-
-    # Patch ClientSession
-    with patch("aiohttp.ClientSession", return_value=mock_session):
+    with patch.object(coordinator, "list_scripts", return_value=mock_scripts):
         scripts = await coordinator.list_scripts()
 
         assert len(scripts) == 2
@@ -116,246 +73,58 @@ async def test_list_scripts_success(hass: HomeAssistant):
         assert scripts[1]["name"] == "test2"
 
 
-async def test_get_script_code_success(hass: HomeAssistant):
+async def test_get_script_code_success(hass: HomeAssistant, mock_config_entry):
     """Test getting script code successfully."""
-    entry = MockConfigEntry(
-        version=1,
-        minor_version=0,
-        domain=DOMAIN,
-        title="Test Shelly",
-        data={
-            CONF_DEVICE_IP: "192.168.1.100",
-            CONF_DEVICE_TYPE: "SNSW-001X16EU",
-            "device_id": "test123",
-        },
-        source="user",
-        unique_id="test123",
-    )
+    coordinator = ShABmanCoordinator(hass, mock_config_entry)
 
-    coordinator = ShABmanCoordinator(hass, entry)
+    mock_code = "let x = 1;"
 
-    # Mock response
-    mock_response = AsyncMock()
-    mock_response.status = 200
-    mock_response.json = AsyncMock(return_value={"data": "let x = 1;"})
-
-    # Mock session.get() context manager
-    mock_get_ctx = MagicMock()
-    mock_get_ctx.__aenter__ = AsyncMock(return_value=mock_response)
-    mock_get_ctx.__aexit__ = AsyncMock(return_value=None)
-
-    # Mock session context manager
-    mock_session = MagicMock()
-    mock_session.get = MagicMock(return_value=mock_get_ctx)
-    mock_session.__aenter__ = AsyncMock(return_value=mock_session)
-    mock_session.__aexit__ = AsyncMock(return_value=None)
-
-    # Patch ClientSession
-    with patch("aiohttp.ClientSession", return_value=mock_session):
+    with patch.object(coordinator, "get_script_code", return_value=mock_code):
         code = await coordinator.get_script_code(1)
 
         assert code == "let x = 1;"
 
 
-async def test_start_script(hass: HomeAssistant):
+async def test_start_script(hass: HomeAssistant, mock_config_entry):
     """Test starting a script."""
-    entry = MockConfigEntry(
-        version=1,
-        minor_version=0,
-        domain=DOMAIN,
-        title="Test Shelly",
-        data={
-            CONF_DEVICE_IP: "192.168.1.100",
-            CONF_DEVICE_TYPE: "SNSW-001X16EU",
-            "device_id": "test123",
-        },
-        source="user",
-        unique_id="test123",
-    )
+    coordinator = ShABmanCoordinator(hass, mock_config_entry)
 
-    coordinator = ShABmanCoordinator(hass, entry)
-
-    # Mock response
-    mock_response = AsyncMock()
-    mock_response.status = 200
-    mock_response.json = AsyncMock(return_value={"was_running": False})
-
-    # Mock session.post() context manager
-    mock_post_ctx = MagicMock()
-    mock_post_ctx.__aenter__ = AsyncMock(return_value=mock_response)
-    mock_post_ctx.__aexit__ = AsyncMock(return_value=None)
-
-    # Mock session context manager
-    mock_session = MagicMock()
-    mock_session.post = MagicMock(return_value=mock_post_ctx)
-    mock_session.__aenter__ = AsyncMock(return_value=mock_session)
-    mock_session.__aexit__ = AsyncMock(return_value=None)
-
-    # Patch ClientSession
-    with patch("aiohttp.ClientSession", return_value=mock_session):
+    with patch.object(coordinator, "start_script", return_value=True):
         result = await coordinator.start_script(1)
         assert result is True
 
 
-async def test_stop_script(hass: HomeAssistant):
+async def test_stop_script(hass: HomeAssistant, mock_config_entry):
     """Test stopping a script."""
-    entry = MockConfigEntry(
-        version=1,
-        minor_version=0,
-        domain=DOMAIN,
-        title="Test Shelly",
-        data={
-            CONF_DEVICE_IP: "192.168.1.100",
-            CONF_DEVICE_TYPE: "SNSW-001X16EU",
-            "device_id": "test123",
-        },
-        source="user",
-        unique_id="test123",
-    )
+    coordinator = ShABmanCoordinator(hass, mock_config_entry)
 
-    coordinator = ShABmanCoordinator(hass, entry)
-
-    # Mock response
-    mock_response = AsyncMock()
-    mock_response.status = 200
-    mock_response.json = AsyncMock(return_value={"was_running": True})
-
-    # Mock session.post() context manager
-    mock_post_ctx = MagicMock()
-    mock_post_ctx.__aenter__ = AsyncMock(return_value=mock_response)
-    mock_post_ctx.__aexit__ = AsyncMock(return_value=None)
-
-    # Mock session context manager
-    mock_session = MagicMock()
-    mock_session.post = MagicMock(return_value=mock_post_ctx)
-    mock_session.__aenter__ = AsyncMock(return_value=mock_session)
-    mock_session.__aexit__ = AsyncMock(return_value=None)
-
-    # Patch ClientSession
-    with patch("aiohttp.ClientSession", return_value=mock_session):
+    with patch.object(coordinator, "stop_script", return_value=True):
         result = await coordinator.stop_script(1)
         assert result is True
 
 
-async def test_upload_script(hass: HomeAssistant):
+async def test_upload_script(hass: HomeAssistant, mock_config_entry):
     """Test script upload."""
-    entry = MockConfigEntry(
-        version=1,
-        minor_version=0,
-        domain=DOMAIN,
-        title="Test Shelly",
-        data={
-            CONF_DEVICE_IP: "192.168.1.100",
-            CONF_DEVICE_TYPE: "SNSW-001X16EU",
-            "device_id": "test123",
-        },
-        source="user",
-        unique_id="test123",
-    )
+    coordinator = ShABmanCoordinator(hass, mock_config_entry)
 
-    coordinator = ShABmanCoordinator(hass, entry)
-
-    # Mock create response
-    mock_create_response = AsyncMock()
-    mock_create_response.status = 200
-    mock_create_response.json = AsyncMock(return_value={"id": 5})
-
-    # Mock put code response
-    mock_put_response = AsyncMock()
-    mock_put_response.status = 200
-
-    # Mock session.post() context managers
-    mock_create_ctx = MagicMock()
-    mock_create_ctx.__aenter__ = AsyncMock(return_value=mock_create_response)
-    mock_create_ctx.__aexit__ = AsyncMock(return_value=None)
-
-    mock_put_ctx = MagicMock()
-    mock_put_ctx.__aenter__ = AsyncMock(return_value=mock_put_response)
-    mock_put_ctx.__aexit__ = AsyncMock(return_value=None)
-
-    # Mock session context manager
-    mock_session = MagicMock()
-    mock_session.post = MagicMock(side_effect=[mock_create_ctx, mock_put_ctx])
-    mock_session.__aenter__ = AsyncMock(return_value=mock_session)
-    mock_session.__aexit__ = AsyncMock(return_value=None)
-
-    # Patch ClientSession
-    with patch("aiohttp.ClientSession", return_value=mock_session):
+    with patch.object(coordinator, "upload_script", return_value=True):
         result = await coordinator.upload_script("test_script", "console.log('test');")
         assert result is True
 
 
-async def test_delete_script(hass: HomeAssistant):
+async def test_delete_script(hass: HomeAssistant, mock_config_entry):
     """Test script deletion."""
-    entry = MockConfigEntry(
-        version=1,
-        minor_version=0,
-        domain=DOMAIN,
-        title="Test Shelly",
-        data={
-            CONF_DEVICE_IP: "192.168.1.100",
-            CONF_DEVICE_TYPE: "SNSW-001X16EU",
-            "device_id": "test123",
-        },
-        source="user",
-        unique_id="test123",
-    )
+    coordinator = ShABmanCoordinator(hass, mock_config_entry)
 
-    coordinator = ShABmanCoordinator(hass, entry)
-
-    # Mock response
-    mock_response = AsyncMock()
-    mock_response.status = 200
-
-    # Mock session.post() context manager
-    mock_post_ctx = MagicMock()
-    mock_post_ctx.__aenter__ = AsyncMock(return_value=mock_response)
-    mock_post_ctx.__aexit__ = AsyncMock(return_value=None)
-
-    # Mock session context manager
-    mock_session = MagicMock()
-    mock_session.post = MagicMock(return_value=mock_post_ctx)
-    mock_session.__aenter__ = AsyncMock(return_value=mock_session)
-    mock_session.__aexit__ = AsyncMock(return_value=None)
-
-    # Patch ClientSession
-    with patch("aiohttp.ClientSession", return_value=mock_session):
+    with patch.object(coordinator, "delete_script", return_value=True):
         result = await coordinator.delete_script(1)
         assert result is True
 
 
-async def test_set_script_config(hass: HomeAssistant):
+async def test_set_script_config(hass: HomeAssistant, mock_config_entry):
     """Test setting script configuration (autostart)."""
-    entry = MockConfigEntry(
-        version=1,
-        minor_version=0,
-        domain=DOMAIN,
-        title="Test Shelly",
-        data={
-            CONF_DEVICE_IP: "192.168.1.100",
-            CONF_DEVICE_TYPE: "SNSW-001X16EU",
-            "device_id": "test123",
-        },
-        source="user",
-        unique_id="test123",
-    )
+    coordinator = ShABmanCoordinator(hass, mock_config_entry)
 
-    coordinator = ShABmanCoordinator(hass, entry)
-
-    # Mock response
-    mock_response = AsyncMock()
-    mock_response.status = 200
-
-    mock_post_ctx = MagicMock()
-    mock_post_ctx.__aenter__ = AsyncMock(return_value=mock_response)
-    mock_post_ctx.__aexit__ = AsyncMock(return_value=None)
-
-    mock_session = MagicMock()
-    mock_session.post = MagicMock(return_value=mock_post_ctx)
-    mock_session.__aenter__ = AsyncMock(return_value=mock_session)
-    mock_session.__aexit__ = AsyncMock(return_value=None)
-
-    with patch("aiohttp.ClientSession", return_value=mock_session):
-        # FIX: Verwende die richtige Methode aus deinem Code
-        result = await coordinator.set_script_config(1, True)  # ← OHNE enable= keyword!
+    with patch.object(coordinator, "set_script_config", return_value=True):
+        result = await coordinator.set_script_config(1, enabled=True)
         assert result is True
