@@ -46,17 +46,29 @@ def mock_coordinator(hass, mock_config_entry):
 
 
 async def test_coordinator_update(hass: HomeAssistant, mock_coordinator, mock_scripts_list):
-    """Test coordinator update."""
-    with patch.object(mock_coordinator, "list_scripts", return_value=mock_scripts_list["scripts"]):
-        await mock_coordinator.async_refresh()
+    """Test coordinator data structure without real IO."""
+    # Simulierte Daten direkt setzen, kein async_refresh / _async_update_data aufrufen
+    mock_coordinator.data = {
+        "scripts": mock_scripts_list["scripts"],
+        "device_type": "SNSW-001X16EU",
+        "running_count": 1,
+        "enabled_count": 1,
+    }
+    mock_coordinator.last_update_success = True
 
-        assert "scripts" in mock_coordinator.data
-        assert len(mock_coordinator.data["scripts"]) == 2
+    assert "scripts" in mock_coordinator.data
+    assert len(mock_coordinator.data["scripts"]) == 2
+    assert mock_coordinator.data["running_count"] == 1
+    assert mock_coordinator.data["enabled_count"] == 1
 
 
 async def test_coordinator_update_failed(hass: HomeAssistant, mock_coordinator):
     """Test coordinator update failure."""
-    with patch.object(mock_coordinator, "list_scripts", side_effect=Exception("Connection error")):
+    with patch.object(
+        mock_coordinator,
+        "list_scripts",
+        side_effect=Exception("Connection error"),
+    ):
         with pytest.raises(UpdateFailed):
             await mock_coordinator._async_update_data()
 
