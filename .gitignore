@@ -147,4 +147,3 @@ home-assistant_v2.db
 # Project specific
 *.bak
 *.tmp
-test_*.py
