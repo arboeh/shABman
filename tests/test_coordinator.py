@@ -30,104 +30,95 @@ def mock_config_entry(hass):
     return entry
 
 
+@pytest.fixture
+def mock_coordinator(hass, mock_config_entry):
+    """Create a coordinator with mocked websocket."""
+    with patch("custom_components.shabman.coordinator.ShABmanCoordinator._websocket_listener"):
+        coordinator = ShABmanCoordinator(hass, mock_config_entry)
+        yield coordinator
+
+        # Cleanup
+        if hasattr(coordinator, "_ws_task") and coordinator._ws_task:
+            coordinator._ws_task.cancel()
+
+
 # ===== Coordinator Tests =====
 
 
-async def test_coordinator_update(hass: HomeAssistant, mock_config_entry, mock_scripts_list):
+async def test_coordinator_update(hass: HomeAssistant, mock_coordinator, mock_scripts_list):
     """Test coordinator update."""
-    coordinator = ShABmanCoordinator(hass, mock_config_entry)
+    with patch.object(mock_coordinator, "list_scripts", return_value=mock_scripts_list["scripts"]):
+        await mock_coordinator.async_refresh()
 
-    with (
-        patch.object(coordinator, "list_scripts", return_value=mock_scripts_list["scripts"]),
-        patch("homeassistant.helpers.frame.get_integration_frame"),
-    ):  # <-- Mock frame check
-        await coordinator.async_config_entry_first_refresh()
-
-        assert "scripts" in coordinator.data
-        assert len(coordinator.data["scripts"]) == 2
+        assert "scripts" in mock_coordinator.data
+        assert len(mock_coordinator.data["scripts"]) == 2
 
 
-async def test_coordinator_update_failed(hass: HomeAssistant, mock_config_entry):
+async def test_coordinator_update_failed(hass: HomeAssistant, mock_coordinator):
     """Test coordinator update failure."""
-    coordinator = ShABmanCoordinator(hass, mock_config_entry)
-
-    with patch.object(coordinator, "list_scripts", side_effect=Exception("Connection error")):
+    with patch.object(mock_coordinator, "list_scripts", side_effect=Exception("Connection error")):
         with pytest.raises(UpdateFailed):
-            await coordinator._async_update_data()
+            await mock_coordinator._async_update_data()
 
 
 # ===== HTTP Request Tests =====
 
 
-async def test_list_scripts_success(hass: HomeAssistant, mock_config_entry):
+async def test_list_scripts_success(hass: HomeAssistant, mock_coordinator):
     """Test listing scripts successfully."""
-    coordinator = ShABmanCoordinator(hass, mock_config_entry)
-
     mock_scripts = [
         {"id": 1, "name": "test1", "enable": True, "running": False},
         {"id": 2, "name": "test2", "enable": False, "running": False},
     ]
 
-    with patch.object(coordinator, "list_scripts", return_value=mock_scripts):
-        scripts = await coordinator.list_scripts()
+    with patch.object(mock_coordinator, "list_scripts", return_value=mock_scripts):
+        scripts = await mock_coordinator.list_scripts()
 
         assert len(scripts) == 2
         assert scripts[0]["name"] == "test1"
         assert scripts[1]["name"] == "test2"
 
 
-async def test_get_script_code_success(hass: HomeAssistant, mock_config_entry):
+async def test_get_script_code_success(hass: HomeAssistant, mock_coordinator):
     """Test getting script code successfully."""
-    coordinator = ShABmanCoordinator(hass, mock_config_entry)
-
     mock_code = "let x = 1;"
 
-    with patch.object(coordinator, "get_script_code", return_value=mock_code):
-        code = await coordinator.get_script_code(1)
+    with patch.object(mock_coordinator, "get_script_code", return_value=mock_code):
+        code = await mock_coordinator.get_script_code(1)
 
         assert code == "let x = 1;"
 
 
-async def test_start_script(hass: HomeAssistant, mock_config_entry):
+async def test_start_script(hass: HomeAssistant, mock_coordinator):
     """Test starting a script."""
-    coordinator = ShABmanCoordinator(hass, mock_config_entry)
-
-    with patch.object(coordinator, "start_script", return_value=True):
-        result = await coordinator.start_script(1)
+    with patch.object(mock_coordinator, "start_script", return_value=True):
+        result = await mock_coordinator.start_script(1)
         assert result is True
 
 
-async def test_stop_script(hass: HomeAssistant, mock_config_entry):
+async def test_stop_script(hass: HomeAssistant, mock_coordinator):
     """Test stopping a script."""
-    coordinator = ShABmanCoordinator(hass, mock_config_entry)
-
-    with patch.object(coordinator, "stop_script", return_value=True):
-        result = await coordinator.stop_script(1)
+    with patch.object(mock_coordinator, "stop_script", return_value=True):
+        result = await mock_coordinator.stop_script(1)
         assert result is True
 
 
-async def test_upload_script(hass: HomeAssistant, mock_config_entry):
+async def test_upload_script(hass: HomeAssistant, mock_coordinator):
     """Test script upload."""
-    coordinator = ShABmanCoordinator(hass, mock_config_entry)
-
-    with patch.object(coordinator, "upload_script", return_value=True):
-        result = await coordinator.upload_script("test_script", "console.log('test');")
+    with patch.object(mock_coordinator, "upload_script", return_value=True):
+        result = await mock_coordinator.upload_script("test_script", "console.log('test');")
         assert result is True
 
 
-async def test_delete_script(hass: HomeAssistant, mock_config_entry):
+async def test_delete_script(hass: HomeAssistant, mock_coordinator):
     """Test script deletion."""
-    coordinator = ShABmanCoordinator(hass, mock_config_entry)
-
-    with patch.object(coordinator, "delete_script", return_value=True):
-        result = await coordinator.delete_script(1)
+    with patch.object(mock_coordinator, "delete_script", return_value=True):
+        result = await mock_coordinator.delete_script(1)
         assert result is True
 
 
-async def test_set_script_config(hass: HomeAssistant, mock_config_entry):
+async def test_set_script_config(hass: HomeAssistant, mock_coordinator):
     """Test setting script configuration (autostart)."""
-    coordinator = ShABmanCoordinator(hass, mock_config_entry)
-
-    with patch.object(coordinator, "set_script_config", return_value=True):
-        result = await coordinator.set_script_config(1, enabled=True)
+    with patch.object(mock_coordinator, "set_script_config", return_value=True):
+        result = await mock_coordinator.set_script_config(1, enabled=True)
         assert result is True
