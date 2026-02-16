@@ -37,7 +37,10 @@ async def test_coordinator_update(hass: HomeAssistant, mock_config_entry, mock_s
     """Test coordinator update."""
     coordinator = ShABmanCoordinator(hass, mock_config_entry)
 
-    with patch.object(coordinator, "list_scripts", return_value=mock_scripts_list["scripts"]):
+    with (
+        patch.object(coordinator, "list_scripts", return_value=mock_scripts_list["scripts"]),
+        patch("homeassistant.helpers.frame.get_integration_frame"),
+    ):  # <-- Mock frame check
         await coordinator.async_config_entry_first_refresh()
 
         assert "scripts" in coordinator.data
