@@ -20,17 +20,20 @@ async def test_form(hass: HomeAssistant) -> None:
     assert result["type"] == FlowResultType.FORM
     assert result["errors"] is None or result["errors"] == {}
 
-    with patch(
-        "custom_components.shabman.config_flow.validate_input",
-        return_value={
-            "title": "shellypluspm-test123",
-            "device_type": "SNSW-001P16EU",
-            "device_id": "shellypluspm-test123",
-        },
-    ), patch(
-        "custom_components.shabman.async_setup_entry",
-        return_value=True,
-    ) as mock_setup_entry:
+    with (
+        patch(
+            "custom_components.shabman.config_flow.validate_input",
+            return_value={
+                "title": "shellypluspm-test123",
+                "device_type": "SNSW-001P16EU",
+                "device_id": "shellypluspm-test123",
+            },
+        ),
+        patch(
+            "custom_components.shabman.async_setup_entry",
+            return_value=True,
+        ) as mock_setup_entry,
+    ):
         result2 = await hass.config_entries.flow.async_configure(
             result["flow_id"],
             {

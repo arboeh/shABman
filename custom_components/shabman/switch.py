@@ -1,11 +1,12 @@
 # custom_components\shabman\switch.py
 
 """Switch platform for shABman."""
+
 import logging
 
 from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.entity import EntityCategory
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -24,17 +25,35 @@ async def async_setup_entry(
     """Set up shABman switches."""
     coordinator: ShABmanCoordinator = hass.data[DOMAIN][entry.entry_id]
 
-    # Create TWO switch entities for each script
-    scripts = coordinator.data.get("scripts", [])
-    entities = []
+    # Track existing entities by script ID
+    tracked_entities: dict[int, tuple[ScriptStatusSwitch, ScriptAutostartSwitch]] = {}
 
-    for script in scripts:
-        # 1. Status switch (running/stopped)
-        entities.append(ScriptStatusSwitch(coordinator, script))
-        # 2. Autostart switch (run on startup)
-        entities.append(ScriptAutostartSwitch(coordinator, script))
+    @callback
+    def async_add_remove_entities():
+        """Add new entities when scripts are added."""
+        current_scripts = coordinator.data.get("scripts", [])
+        current_script_ids = {script["id"] for script in current_scripts}
+        tracked_ids = set(tracked_entities.keys())
 
-    async_add_entities(entities)
+        # Add new scripts
+        new_ids = current_script_ids - tracked_ids
+        if new_ids:
+            new_entities = []
+            for script in current_scripts:
+                if script["id"] in new_ids:
+                    status_switch = ScriptStatusSwitch(coordinator, script)
+                    autostart_switch = ScriptAutostartSwitch(coordinator, script)
+                    tracked_entities[script["id"]] = (status_switch, autostart_switch)
+                    new_entities.extend([status_switch, autostart_switch])
+
+            if new_entities:
+                async_add_entities(new_entities)
+
+    # Initial setup
+    async_add_remove_entities()
+
+    # Listen for coordinator updates to detect new scripts
+    entry.async_on_unload(coordinator.async_add_listener(async_add_remove_entities))
 
 
 class ScriptStatusSwitch(CoordinatorEntity, SwitchEntity):
@@ -97,6 +116,14 @@ class ScriptStatusSwitch(CoordinatorEntity, SwitchEntity):
         if success:
             await self.coordinator.async_request_refresh()
 
+    @property
+    def available(self) -> bool:
+        """Return if entity is available (script still exists)."""
+        if not self.coordinator.last_update_success:
+            return False
+        scripts = self.coordinator.data.get("scripts", [])
+        return any(script["id"] == self._script_id for script in scripts)
+
     async def async_turn_off(self, **kwargs) -> None:
         """Stop the script."""
         success = await self.coordinator.stop_script(self._script_id)
@@ -148,6 +175,14 @@ class ScriptAutostartSwitch(CoordinatorEntity, SwitchEntity):
     def entity_category(self) -> EntityCategory:
         """Set entity category to config."""
         return EntityCategory.CONFIG
+
+    @property
+    def available(self) -> bool:
+        """Return if entity is available (script still exists)."""
+        if not self.coordinator.last_update_success:
+            return False
+        scripts = self.coordinator.data.get("scripts", [])
+        return any(script["id"] == self._script_id for script in scripts)
 
     async def async_turn_on(self, **kwargs) -> None:
         """Enable script autostart."""

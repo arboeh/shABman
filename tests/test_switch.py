@@ -33,15 +33,19 @@ async def setup_switch_platform(hass: HomeAssistant, mock_scripts_list):
 
     hass.config_entries._entries[entry.entry_id] = entry
 
-    with patch(
-        "custom_components.shabman.coordinator.ShABmanCoordinator.list_scripts",
-        return_value=mock_scripts_list["scripts"],
-    ), patch(
-        "custom_components.shabman.coordinator.ShABmanCoordinator._async_update_data",
-        return_value={"scripts": mock_scripts_list["scripts"]},
-    ), patch(
-        "custom_components.shabman.coordinator.ShABmanCoordinator._websocket_listener",  # ← RICHTIG!
-        return_value=None,
+    with (
+        patch(
+            "custom_components.shabman.coordinator.ShABmanCoordinator.list_scripts",
+            return_value=mock_scripts_list["scripts"],
+        ),
+        patch(
+            "custom_components.shabman.coordinator.ShABmanCoordinator._async_update_data",
+            return_value={"scripts": mock_scripts_list["scripts"]},
+        ),
+        patch(
+            "custom_components.shabman.coordinator.ShABmanCoordinator._websocket_listener",  # ← RICHTIG!
+            return_value=None,
+        ),
     ):
         assert await async_setup_entry(hass, entry)
         await hass.async_block_till_done()
@@ -247,3 +251,92 @@ async def test_switch_attributes(hass: HomeAssistant, setup_integration):
     assert state is not None
     assert "script_id" in state.attributes
     assert state.attributes["script_id"] == 1
+
+
+async def test_switch_dynamic_script_addition(hass: HomeAssistant, setup_integration):
+    """Test that new scripts are automatically detected and entities created."""
+    entry = setup_integration
+    coordinator = hass.data[DOMAIN][entry.entry_id]
+
+    # Initial state: 2 scripts = 4 switches
+    entity_registry = er.async_get(hass)
+    initial_switches = [
+        entity
+        for entity in entity_registry.entities.values()
+        if entity.domain == "switch" and entity.config_entry_id == entry.entry_id
+    ]
+    assert len(initial_switches) == 4
+
+    # Simulate adding a new script
+    new_script_data = {
+        "scripts": [
+            {"id": 1, "name": "BLU_Gateway", "enable": True, "running": True},
+            {"id": 2, "name": "test_script", "enable": False, "running": False},
+            {"id": 3, "name": "new_script", "enable": False, "running": False},  # NEW!
+        ]
+    }
+
+    # Update coordinator data
+    with patch.object(
+        coordinator,
+        "data",
+        new_script_data,
+    ):
+        # Trigger coordinator update
+        coordinator.async_set_updated_data(new_script_data)
+        await hass.async_block_till_done()
+
+    # Check that new entities were created
+    updated_switches = [
+        entity
+        for entity in entity_registry.entities.values()
+        if entity.domain == "switch" and entity.config_entry_id == entry.entry_id
+    ]
+
+    # Should now have 3 scripts = 6 switches
+    assert len(updated_switches) == 6
+
+    # Verify the new script's switches exist
+    new_switches = [entity for entity in updated_switches if "new_script" in entity.entity_id.lower()]
+    assert len(new_switches) == 2  # status + autostart
+
+
+async def test_switch_available_when_script_deleted(hass: HomeAssistant, setup_integration):
+    """Test that switch becomes unavailable when script is deleted."""
+    entry = setup_integration
+    coordinator = hass.data[DOMAIN][entry.entry_id]
+
+    # Find test_script switch
+    entity_registry = er.async_get(hass)
+    test_switches = [
+        entity
+        for entity in entity_registry.entities.values()
+        if entity.domain == "switch"
+        and "test_script" in entity.entity_id.lower()
+        and "autostart" not in entity.entity_id
+    ]
+
+    assert len(test_switches) > 0
+    entity_id = test_switches[0].entity_id
+
+    # Initial state should be available
+    state = hass.states.get(entity_id)
+    assert state is not None
+    assert state.state != "unavailable"
+
+    # Simulate script deletion (only BLU_Gateway remains)
+    deleted_script_data = {
+        "scripts": [
+            {"id": 1, "name": "BLU_Gateway", "enable": True, "running": True},
+            # test_script (id=2) removed!
+        ]
+    }
+
+    # Update coordinator data
+    coordinator.async_set_updated_data(deleted_script_data)
+    await hass.async_block_till_done()
+
+    # Check that switch is now unavailable
+    state = hass.states.get(entity_id)
+    assert state is not None
+    assert state.state == "unavailable"

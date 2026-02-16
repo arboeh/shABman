@@ -2,7 +2,9 @@
 
 """Fixtures for shABman tests."""
 
+import logging
 import uuid
+import warnings
 from unittest.mock import patch
 
 import pytest
@@ -11,6 +13,22 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.shabman import async_setup_entry, async_unload_entry
 from custom_components.shabman.const import CONF_DEVICE_IP, CONF_DEVICE_TYPE, DOMAIN
+
+# Configure logging for tests
+logging.getLogger("asyncio").setLevel(logging.WARNING)
+logging.getLogger("homeassistant").setLevel(logging.WARNING)
+logging.getLogger("custom_components.shabman").setLevel(logging.INFO)
+
+# Filter pytest warnings
+warnings.filterwarnings("ignore", message=".*custom integration.*has not been tested.*")
+
+# Set base levels for noisy modules
+logging.getLogger("asyncio").setLevel(logging.ERROR)
+logging.getLogger("homeassistant").setLevel(logging.ERROR)
+logging.getLogger("pytest_homeassistant_custom_component").setLevel(logging.ERROR)
+
+# Keep our logs visible
+logging.getLogger("custom_components.shabman").setLevel(logging.INFO)
 
 
 # KRITISCH: Disable pytest-socket BEFORE any fixtures run
@@ -98,20 +116,24 @@ async def setup_integration(hass: HomeAssistant, mock_scripts_list):
     entry.add_to_hass(hass)
 
     # Mock nur die API calls, NICHT die Platform-Setups!
-    with patch(
-        "custom_components.shabman.coordinator.ShABmanCoordinator.list_scripts",
-        return_value=mock_scripts_list["scripts"],
-    ), patch(
-        "custom_components.shabman.coordinator.ShABmanCoordinator._async_update_data",
-        return_value={
-            "scripts": mock_scripts_list["scripts"],
-            "device_type": "SNSW-001X16EU",
-            "running_count": 1,
-            "enabled_count": 1,
-        },
-    ), patch(
-        "custom_components.shabman.coordinator.ShABmanCoordinator._websocket_listener",
-        return_value=None,  # Mock to prevent actual WebSocket connection
+    with (
+        patch(
+            "custom_components.shabman.coordinator.ShABmanCoordinator.list_scripts",
+            return_value=mock_scripts_list["scripts"],
+        ),
+        patch(
+            "custom_components.shabman.coordinator.ShABmanCoordinator._async_update_data",
+            return_value={
+                "scripts": mock_scripts_list["scripts"],
+                "device_type": "SNSW-001X16EU",
+                "running_count": 1,
+                "enabled_count": 1,
+            },
+        ),
+        patch(
+            "custom_components.shabman.coordinator.ShABmanCoordinator._websocket_listener",
+            return_value=None,  # Mock to prevent actual WebSocket connection
+        ),
     ):
         # Setup the integration - Das lädt die echten Platforms!
         result = await async_setup_entry(hass, entry)
