@@ -8,10 +8,10 @@ import warnings
 from unittest.mock import patch
 
 import pytest
+from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.shabman import async_setup_entry, async_unload_entry
 from custom_components.shabman.const import CONF_DEVICE_IP, CONF_DEVICE_TYPE, DOMAIN
 
 # Configure logging for tests
@@ -102,7 +102,7 @@ async def setup_integration(hass: HomeAssistant, mock_scripts_list):
     # Create unique ID for each test
     unique_id = str(uuid.uuid4())
 
-    # Verwende MockConfigEntry statt ConfigEntry!
+    # Verwende MockConfigEntry
     entry = MockConfigEntry(
         domain=DOMAIN,
         title="Test Shelly",
@@ -132,13 +132,15 @@ async def setup_integration(hass: HomeAssistant, mock_scripts_list):
         ),
         patch(
             "custom_components.shabman.coordinator.ShABmanCoordinator._websocket_listener",
-            return_value=None,  # Mock to prevent actual WebSocket connection
+            return_value=None,
         ),
     ):
-        # Setup the integration - Das lädt die echten Platforms!
-        result = await async_setup_entry(hass, entry)
-        assert result is True
+        # Setup the integration mit await entry.async_setup()
+        await hass.config_entries.async_setup(entry.entry_id)  # <-- ÄNDERN!
         await hass.async_block_till_done()
+
+        # Verify it loaded
+        assert entry.state == ConfigEntryState.LOADED  # <-- NEU!
 
         yield entry
 
@@ -152,8 +154,6 @@ async def setup_integration(hass: HomeAssistant, mock_scripts_list):
             except Exception:
                 pass
 
-    try:
-        await async_unload_entry(hass, entry)
-        await hass.async_block_till_done()
-    except Exception:
-        pass
+    # Unload entry properly
+    await hass.config_entries.async_unload(entry.entry_id)  # <-- ÄNDERN!
+    await hass.async_block_till_done()
