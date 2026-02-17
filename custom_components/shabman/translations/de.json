@@ -6,10 +6,6 @@
         "description": "Geben Sie die IP-Adresse Ihres Shelly BLU Gateway ein",
         "data": {
           "device_ip": "Geräte IP-Adresse"
-        },
-        "error": {
-          "cannot_connect": "Verbindung zum Gerät fehlgeschlagen",
-          "unknown": "Unerwarteter Fehler"
         }
       }
     },
