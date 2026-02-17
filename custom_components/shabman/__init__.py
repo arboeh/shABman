@@ -16,6 +16,12 @@ from .const import DOMAIN
 from .coordinator import ShABmanCoordinator
 
 _LOGGER = logging.getLogger(__name__)
+try:
+    from .__version__ import __version__
+
+    _LOGGER.info(f"shABman v{__version__} loaded")
+except ImportError:
+    pass
 
 # Platforms to set up
 PLATFORMS = ["switch", "sensor"]

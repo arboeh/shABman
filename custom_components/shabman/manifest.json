@@ -1,9 +1,7 @@
 {
   "domain": "shabman",
   "name": "shABman - Shelly Script Manager",
-  "codeowners": [
-    "@arboeh"
-  ],
+  "codeowners": ["@arboeh"],
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/arboeh/shABman",
@@ -11,5 +9,5 @@
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/arboeh/shABman/issues",
   "requirements": [],
-  "version": "0.1.0"
+  "version": "0.5.0-beta"
 }
