@@ -78,7 +78,7 @@ class ShABmanCoordinator(DataUpdateCoordinator):
                     enabled_count += 1
 
             _LOGGER.debug(
-                f"Updated data: {len(scripts)} scripts " f"({running_count} running, {enabled_count} autostart enabled)"
+                f"Updated data: {len(scripts)} scripts ({running_count} running, {enabled_count} autostart enabled)"
             )
 
             return {
@@ -210,7 +210,7 @@ class ShABmanCoordinator(DataUpdateCoordinator):
                         }
 
                         _LOGGER.debug(
-                            f"Script {script_id} status: " f"running={status['running']}, enabled={status['enabled']}"
+                            f"Script {script_id} status: running={status['running']}, enabled={status['enabled']}"
                         )
 
                         return status
@@ -381,7 +381,7 @@ class ShABmanCoordinator(DataUpdateCoordinator):
             async with aiohttp.ClientSession() as session:
                 async with session.post(url, json=payload, timeout=10) as response:
                     if response.status == 200:
-                        _LOGGER.info(f"Script {script_id} autostart " f"{'enabled' if enabled else 'disabled'}")
+                        _LOGGER.info(f"Script {script_id} autostart {'enabled' if enabled else 'disabled'}")
                         return True
                     else:
                         _LOGGER.error(f"Failed to set script config: {response.status}")
