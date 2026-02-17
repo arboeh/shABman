@@ -8,14 +8,16 @@
           "device_ip": "Geräte IP-Adresse"
         },
         "error": {
-          "invalid_ip": "Ungültige IPv4-Adresse"
+          "cannot_connect": "Verbindung zum Gerät fehlgeschlagen",
+          "unknown": "Unerwarteter Fehler"
         }
       }
     },
     "error": {
       "cannot_connect": "Verbindung zum Gerät fehlgeschlagen",
       "unsupported_device": "Gerätetyp wird nicht unterstützt",
-      "unknown": "Unerwarteter Fehler"
+      "unknown": "Unerwarteter Fehler",
+      "invalid_ip": "Ungültige IPv4-Adresse"
     },
     "abort": {
       "already_configured": "Gerät ist bereits konfiguriert"
