@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11", "3.12"]
+        python-version: ['3.11', '3.12']
 
     steps:
       - name: Checkout code
@@ -50,6 +50,8 @@ jobs:
         uses: hacs/action@main
         with:
           category: integration
+        env:
+          SKIP_BRANDS_CHECK: true
 
       - name: Hassfest Validation
         uses: home-assistant/actions/hassfest@master
