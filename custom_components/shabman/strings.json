@@ -6,6 +6,9 @@
         "description": "Enter the IP address of your Shelly BLU Gateway",
         "data": {
           "device_ip": "Device IP Address"
+        },
+        "error": {
+          "invalid_ip": "Invalid IPv4 address"
         }
       }
     },

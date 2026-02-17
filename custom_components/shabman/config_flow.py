@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import logging
+from ipaddress import IPv4Address
 from typing import Any
 
 import aiohttp
@@ -20,7 +21,7 @@ _LOGGER = logging.getLogger(__name__)
 
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
-        vol.Required(CONF_DEVICE_IP): str,
+        vol.Required(CONF_DEVICE_IP, default="192.168.1.100"): str,
     }
 )
 
@@ -35,9 +36,18 @@ class UnsupportedDevice(Exception):
 
 async def validate_input(hass, data: dict[str, Any]) -> dict[str, Any]:
     """Validate the user input allows us to connect."""
-    device_ip = data[CONF_DEVICE_IP]
+    device_ip_raw = data[CONF_DEVICE_IP]
+    device_ip = str(device_ip_raw).strip()
 
-    # Get device info directly
+    # IPv4-Validierung hier, NICHT im Schema
+    try:
+        IPv4Address(device_ip)
+    except ValueError:
+        # Mapping auf deine Übersetzungen in strings.json
+        # config.step.user.error.invalid_ip
+        raise vol.Invalid("invalid_ip")
+
+    url = f"http://{device_ip}/rpc/Shelly.GetDeviceInfo"
     url = f"http://{device_ip}/rpc/Shelly.GetDeviceInfo"
 
     try:
