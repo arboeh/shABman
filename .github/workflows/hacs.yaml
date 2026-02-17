@@ -16,7 +16,6 @@ jobs:
 
       - name: HACS validation
         uses: hacs/action@main
-        env:
-          SKIP_BRANDS_CHECK: 'true'
         with:
           category: integration
+          ignore: brands
