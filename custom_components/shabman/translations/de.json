@@ -61,7 +61,7 @@
       },
       "confirm_delete": {
         "title": "Löschen bestätigen",
-        "description": "Möchten Sie Script '{script_name}' (ID: {script_id}) wirklich löschen?",
+        "description": "Möchten Sie das Script wirklich löschen?",
         "data": {}
       }
     },
