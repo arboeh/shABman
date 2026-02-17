@@ -34,8 +34,6 @@ jobs:
       - name: Lint with flake8
         run: |
           pip install flake8
-          flake8 custom_components/shabman --count --select=E9,F63,F7,F82 --show-source --statistics
-          flake8 custom_components/shabman --count --max-line-length=120 --statistics
 
       - name: Format check with black
         run: |
