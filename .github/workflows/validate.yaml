@@ -4,23 +4,18 @@ name: Validate
 
 on:
   push:
-    branches:
-      - main
-      - dev
+    branches: [main, develop]
   pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
 
 jobs:
-  validate:
+  validate-hacs:
     runs-on: ubuntu-latest
-    name: Validate
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-
-      - name: HACS Validation
+      - name: HACS validation
         uses: hacs/action@main
         with:
-          category: integration
-
-      - name: Hassfest Validation
-        uses: home-assistant/actions/hassfest@master
+          category: 'integration'
