@@ -39,15 +39,11 @@ async def validate_input(hass, data: dict[str, Any]) -> dict[str, Any]:
     device_ip_raw = data[CONF_DEVICE_IP]
     device_ip = str(device_ip_raw).strip()
 
-    # IPv4-Validierung hier, NICHT im Schema
     try:
         IPv4Address(device_ip)
-    except ValueError:
-        # Mapping auf deine Übersetzungen in strings.json
-        # config.step.user.error.invalid_ip
-        raise vol.Invalid("invalid_ip")
+    except ValueError as err:
+        raise vol.Invalid("invalid_ip") from err
 
-    url = f"http://{device_ip}/rpc/Shelly.GetDeviceInfo"
     url = f"http://{device_ip}/rpc/Shelly.GetDeviceInfo"
 
     try:
@@ -59,7 +55,7 @@ async def validate_input(hass, data: dict[str, Any]) -> dict[str, Any]:
                 device_info = await response.json()
     except Exception as err:
         _LOGGER.error(f"Connection error: {err}")
-        raise CannotConnect
+        raise CannotConnect from err
 
     device_type = device_info.get("model", device_info.get("app", "unknown"))
     device_id = device_info.get("id", "unknown")

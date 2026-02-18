@@ -54,9 +54,9 @@ class ShABmanCoordinator(DataUpdateCoordinator):
             running_count = 0
             enabled_count = 0
 
-            for script, status in zip(scripts, statuses):
+            for script, status in zip(scripts, statuses, strict=False):
                 # "enable" kommt aus Script.List, nicht GetStatus!
-                script_enabled = script.get("enable", False)  # 🔥 Aus List!
+                script_enabled = script.get("enable", False)
 
                 # Handle status (running, mem_used, etc.)
                 if isinstance(status, Exception) or not status:
@@ -89,7 +89,7 @@ class ShABmanCoordinator(DataUpdateCoordinator):
             }
         except Exception as err:
             _LOGGER.error(f"Error updating data: {err}")
-            raise UpdateFailed(f"Error communicating with device: {err}")
+            raise UpdateFailed(f"Error communicating with device: {err}") from err
 
     async def async_start_websocket(self) -> None:
         """Start WebSocket connection for real-time updates."""

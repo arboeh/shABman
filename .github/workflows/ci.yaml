@@ -1,22 +1,22 @@
-# .github\workflows\ci.yaml
+# .github/workflows/ci.yaml
 
 name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, dev]
   pull_request:
-    branches: [main]
+    branches: [main, dev]
 
 jobs:
-  tests:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ['3.11', '3.12']
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 2
@@ -30,15 +30,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements_test.txt
+          pip install ruff
 
-      - name: Lint with flake8
-        run: |
-          pip install flake8
+      - name: Lint with ruff
+        run: ruff check custom_components/shabman tests/
 
-      - name: Format check with black
-        run: |
-          pip install "black==24.1.1"
-          black --check --line-length=120 custom_components/shabman
+      - name: Format check with ruff
+        run: ruff format --check custom_components/shabman tests/
 
       - name: Run tests with pytest
         run: |
@@ -50,3 +48,14 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: arboeh/shABman
           fail_ci_if_error: false
+
+  validate:
+    runs-on: ubuntu-latest
+    name: Validate Integration
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Hassfest Validation
+        uses: home-assistant/actions/hassfest@master

@@ -1,6 +1,7 @@
 # custom_components\shabman\sensor.py
 
 """Sensor platform for shABman."""
+
 import logging
 
 from homeassistant.components.sensor import SensorEntity

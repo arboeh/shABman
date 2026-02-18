@@ -180,7 +180,7 @@ def _register_services(hass: HomeAssistant) -> None:
 
 def _find_coordinator_by_device_id(hass: HomeAssistant, device_id: str):
     """Find coordinator by device_id."""
-    for entry_id, coordinator in hass.data[DOMAIN].items():
+    for _entry_id, coordinator in hass.data[DOMAIN].items():
         # Use device_id stored in coordinator
         if hasattr(coordinator, "device_id") and coordinator.device_id == device_id:
             return coordinator
