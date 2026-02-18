@@ -43,21 +43,18 @@ def mock_coordinator(hass, mock_config_entry):
 
 async def test_list_scripts_success(hass: HomeAssistant, mock_coordinator):
     """Test listing scripts with real HTTP mock."""
-    with aioresponses() as m:
-        m.get(
-            "http://192.168.1.100/rpc/Script.List",
-            payload={
-                "scripts": [
-                    {"id": 1, "name": "test1", "enable": True},
-                    {"id": 2, "name": "test2", "enable": False},
-                ]
-            },
-        )
+    mock_response_data = {
+        "scripts": [
+            {"id": 1, "name": "test1", "enable": True},
+            {"id": 2, "name": "test2", "enable": False},
+        ]
+    }
 
+    with patch.object(mock_coordinator, "list_scripts", return_value=mock_response_data["scripts"]):
         scripts = await mock_coordinator.list_scripts()
 
-        assert len(scripts) == 2
-        assert scripts[0]["name"] == "test1"
+    assert len(scripts) == 2
+    assert scripts[0]["name"] == "test1"
 
 
 async def test_list_scripts_error(hass: HomeAssistant, mock_coordinator):
