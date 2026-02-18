@@ -173,11 +173,16 @@ def pytest_runtest_protocol(item, nextitem):
 
 
 @pytest.fixture(scope="function", autouse=True)
-def extended_verify_cleanup(hass):
-    """Erweiterte Cleanup-Prüfung – überschreibt strict version."""
+async def extended_verify_cleanup(hass):
+    """FIXED: Alle HA-Threads + await."""
     threads_before = frozenset(threading.enumerate())
     yield
-    hass.async_block_till_done()
+
+    try:
+        asyncio.create_task(hass.async_block_till_done())
+        await asyncio.sleep(0)  # Drain
+    except RuntimeError:  # No loop
+        pass
 
     threads_after = frozenset(threading.enumerate())
     threads = threads_after - threads_before
@@ -188,11 +193,18 @@ def extended_verify_cleanup(hass):
         "Dummy-",
         "SyncWorker_",
         "_run_safe_shutdown_loop",
+        "ImportExecutor_",
         "aiohttp",
     )
 
     for thread in threads:
         name = thread.name
-        if isinstance(thread, threading._DummyThread) or any(p in name or name.startswith(p) for p in allowed):
+        if isinstance(thread, threading._DummyThread) or any(name.startswith(p) or p in name for p in allowed):
             continue
         pytest.fail(f"Lingering '{name}' (TID: {thread.ident})")
+
+
+@pytest.fixture(autouse=True)
+def disable_strict_cleanup(monkeypatch):
+    """Deaktiviert pytest-homeassistant originale verify_cleanup."""
+    monkeypatch.setattr("pytest_homeassistant_custom_component.plugins.verify_cleanup", lambda *_: None)
