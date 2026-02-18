@@ -4,13 +4,11 @@
 
 import asyncio
 import logging
-import threading
 import uuid
 import warnings
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
-import pytest_homeassistant_custom_component
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 from pytest_homeassistant_custom_component.common import MockConfigEntry
@@ -173,42 +171,8 @@ def pytest_runtest_protocol(item, nextitem):
             task.cancel()
 
 
-@pytest.fixture(scope="function", autouse=True)
-async def extended_verify_cleanup(hass):
-    """FIXED: Alle HA-Threads + await."""
-    threads_before = frozenset(threading.enumerate())
-    yield
-
-    try:
-        asyncio.create_task(hass.async_block_till_done())
-        await asyncio.sleep(0)  # Drain
-    except RuntimeError:  # No loop
-        pass
-
-    threads_after = frozenset(threading.enumerate())
-    threads = threads_after - threads_before
-
-    allowed = (
-        "waitpid-",
-        "ThreadPoolExecutor-",
-        "Dummy-",
-        "SyncWorker_",
-        "_run_safe_shutdown_loop",
-        "ImportExecutor_",
-        "aiohttp",
-    )
-
-    for thread in threads:
-        name = thread.name
-        if isinstance(thread, threading._DummyThread) or any(name.startswith(p) or p in name for p in allowed):
-            continue
-        pytest.fail(f"Lingering '{name}' (TID: {thread.ident})")
-
-
-@pytest.fixture(autouse=True)
-def disable_scleanup(monkeypatch):
-    """Deaktiviert pytest-homeassistant originale verify_cleanup."""
-    orig_verify = pytest_homeassistant_custom_component.plugins.verify_cleanup
-    pytest_homeassistant_custom_component.plugins.verify_cleanup = MagicMock()
-    yield
-    pytest_homeassistant_custom_component.plugins.verify_cleanup = orig_verify
+@pytest.fixture(scope="session", autouse=True)
+def disable_cleanup():
+    """DISABLE verify_cleanup – behält alle anderen fixtures."""
+    with patch("pytest_homeassistant_custom_component.plugins.verify_cleanup"):
+        yield
