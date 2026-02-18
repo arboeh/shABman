@@ -7,3 +7,4 @@ freezegun==1.5.1
 attrs==23.2.0
 pytest-socket==0.7.0
 requests-mock==1.12.1
+syrupy==5.1.0
