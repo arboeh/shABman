@@ -44,10 +44,10 @@ jobs:
           pytest tests/ -v --cov=custom_components.shabman --cov-report=xml --cov-report=term-missing
 
       - name: Upload coverage to Codecov
+        if: matrix.python-version == '3.12'
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          slug: arboeh/shABman
           fail_ci_if_error: false
 
   validate:
