@@ -11,3 +11,4 @@ requests-mock==1.12.1
 syrupy==4.9.1
 voluptuous==0.16.0
 slugify==0.0.1
+ciso8601==2.3.3
