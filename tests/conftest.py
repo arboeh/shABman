@@ -7,9 +7,10 @@ import logging
 import threading
 import uuid
 import warnings
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
+import pytest_homeassistant_custom_component
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 from pytest_homeassistant_custom_component.common import MockConfigEntry
@@ -205,6 +206,9 @@ async def extended_verify_cleanup(hass):
 
 
 @pytest.fixture(autouse=True)
-def disable_strict_cleanup(monkeypatch):
+def disable_scleanup(monkeypatch):
     """Deaktiviert pytest-homeassistant originale verify_cleanup."""
-    monkeypatch.setattr("pytest_homeassistant_custom_component.plugins.verify_cleanup", lambda *_: None)
+    orig_verify = pytest_homeassistant_custom_component.plugins.verify_cleanup
+    pytest_homeassistant_custom_component.plugins.verify_cleanup = MagicMock()
+    yield
+    pytest_homeassistant_custom_component.plugins.verify_cleanup = orig_verify
