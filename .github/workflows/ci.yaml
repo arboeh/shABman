@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip --no-cache-dir
-          pip install pytest==7.2.1 pytest-cov==3.0.0 pytest-asyncio==0.20.3 freezegun==1.5.1 attrs==23.2.0 pytest-socket==0.7.0 aioresponses==0.7.6 requests-mock==1.12.1 syrupy==5.1.0
+          pip install pytest==7.2.1 pytest-cov==3.0.0 pytest-asyncio==0.20.3 freezegun==1.5.1 attrs==23.2.0 pytest-socket==0.7.0 aioresponses==0.7.6 requests-mock==1.12.1 syrupy==4.9.1
           pip install pytest-homeassistant-custom-component==0.13.0 --no-deps
           pip install ruff --no-cache-dir
 
