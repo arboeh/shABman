@@ -13,7 +13,6 @@ license = "MIT"
 
 [project.optional-dependencies]
 test = [
-    "pytest==7.4.4",
     "pytest-asyncio==0.20.3",
     "pytest-cov==3.0.0",
     "pytest-homeassistant-custom-component==0.13.0",
