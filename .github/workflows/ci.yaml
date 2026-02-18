@@ -41,9 +41,10 @@ jobs:
 
       - name: Run tests with pytest
         env:
-          PYTEST_HA_CLEANUP: false
+          PYTEST_HA_CLEANUP: '0'
+          PYTEST_HA_THREADLEAK: '0'
         run: |
-          pytest tests/ -v --cov=custom_components.shabman --cov-report=xml --cov-report=term-missing --no-cleanup
+          pytest tests/ -v --cov=custom_components.shabman --cov-report=xml --cov-report=term-missing
 
       - name: Upload coverage to Codecov
         if: matrix.python-version == '3.12'
