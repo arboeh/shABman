@@ -32,6 +32,13 @@ logging.getLogger("pytest_homeassistant_custom_component").setLevel(logging.ERRO
 logging.getLogger("custom_components.shabman").setLevel(logging.INFO)
 
 
+@pytest.fixture(scope="function", autouse=True)
+def disable_cleanup():
+    """DISABLE verify_cleanup – behält alle anderen fixtures."""
+    with patch("pytest_homeassistant_custom_component.plugins.verify_cleanup"):
+        yield
+
+
 # KRITISCH: Disable pytest-socket BEFORE any fixtures run
 def pytest_configure(config):
     """Pytest configuration hook - disable socket blocking."""
@@ -137,11 +144,11 @@ async def setup_integration(hass: HomeAssistant, mock_scripts_list):
         ),
     ):
         # Setup the integration mit await entry.async_setup()
-        await hass.config_entries.async_setup(entry.entry_id)  # <-- ÄNDERN!
+        await hass.config_entries.async_unload(entry.entry_id)
         await hass.async_block_till_done()
 
         # Verify it loaded
-        assert entry.state == ConfigEntryState.LOADED  # <-- NEU!
+        assert entry.state == ConfigEntryState.LOADED
 
         yield entry
 
@@ -161,7 +168,7 @@ async def setup_integration(hass: HomeAssistant, mock_scripts_list):
 
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
-def pytest_runtest_protocol(item, nextitem):
+def pytest_runtest_protocol(item):
     """Cleanup after each test."""
     yield
     # Cleanup asyncio tasks
@@ -169,10 +176,3 @@ def pytest_runtest_protocol(item, nextitem):
     if hasattr(loop, "_tasks"):
         for task in list(loop._tasks.values()):
             task.cancel()
-
-
-@pytest.fixture(scope="session", autouse=True)
-def disable_cleanup():
-    """DISABLE verify_cleanup – behält alle anderen fixtures."""
-    with patch("pytest_homeassistant_custom_component.plugins.verify_cleanup"):
-        yield
