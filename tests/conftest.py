@@ -2,6 +2,7 @@
 
 """Fixtures for shABman tests."""
 
+import asyncio
 import logging
 import uuid
 import warnings
@@ -157,3 +158,14 @@ async def setup_integration(hass: HomeAssistant, mock_scripts_list):
     # Unload entry properly
     await hass.config_entries.async_unload(entry.entry_id)  # <-- ÄNDERN!
     await hass.async_block_till_done()
+
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_protocol(item, nextitem):
+    """Cleanup after each test."""
+    yield
+    # Cleanup asyncio tasks
+    loop = asyncio.get_event_loop()
+    if hasattr(loop, "_tasks"):
+        for task in list(loop._tasks.values()):
+            task.cancel()
