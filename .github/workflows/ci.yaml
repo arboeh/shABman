@@ -40,6 +40,8 @@ jobs:
         run: ruff format --check custom_components/shabman tests/
 
       - name: Run tests with pytest
+        env:
+          PYTEST_HA_CLEANUP: false
         run: |
           pytest tests/ -v --cov=custom_components.shabman --cov-report=xml --cov-report=term-missing
 
