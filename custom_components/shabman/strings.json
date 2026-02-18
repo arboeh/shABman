@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "shABman Setup",
-        "description": "Enter the IP address of your Shelly BLU Gateway",
+        "description": "Enter the IP address of your Shelly Gen2 Device",
         "data": {
           "device_ip": "Device IP Address"
         }
