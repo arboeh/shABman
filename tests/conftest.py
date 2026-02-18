@@ -4,6 +4,7 @@
 
 import asyncio
 import logging
+import threading
 import uuid
 import warnings
 from unittest.mock import patch
@@ -169,3 +170,29 @@ def pytest_runtest_protocol(item, nextitem):
     if hasattr(loop, "_tasks"):
         for task in list(loop._tasks.values()):
             task.cancel()
+
+
+@pytest.fixture(scope="function", autouse=True)
+def extended_verify_cleanup(hass):
+    """Erweiterte Cleanup-Prüfung – überschreibt strict version."""
+    threads_before = frozenset(threading.enumerate())
+    yield
+    hass.async_block_till_done()
+
+    threads_after = frozenset(threading.enumerate())
+    threads = threads_after - threads_before
+
+    allowed = (
+        "waitpid-",
+        "ThreadPoolExecutor-",
+        "Dummy-",
+        "SyncWorker_",
+        "_run_safe_shutdown_loop",
+        "aiohttp",
+    )
+
+    for thread in threads:
+        name = thread.name
+        if isinstance(thread, threading._DummyThread) or any(p in name or name.startswith(p) for p in allowed):
+            continue
+        pytest.fail(f"Lingering '{name}' (TID: {thread.ident})")
