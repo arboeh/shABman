@@ -1,5 +1,3 @@
-# .github/workflows/ci.yaml
-
 name: CI
 
 on:
@@ -14,7 +12,7 @@ jobs:
     timeout-minutes: 10
     strategy:
       matrix:
-        python-version: ['3.11']
+        python-version: ['3.11', '3.12']
 
     steps:
       - name: Checkout code
@@ -29,10 +27,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip --no-cache-dir
-          pip install pytest==7.2.1 pytest-cov==3.0.0 pytest-asyncio==0.20.3 freezegun==1.5.1 attrs==23.2.0 pytest-socket==0.7.0 aioresponses==0.7.6 requests-mock==1.12.1 syrupy==4.9.1 voluptuous==0.16.0 slugify==0.0.1 ciso8601==2.3.3
-          pip install homeassistant==2024.1.0 pytest-homeassistant-custom-component==0.13.0 --no-deps
-          pip install ruff --no-cache-dir
+          python -m pip install --upgrade pip
+          pip install -e ".[test]"
 
       - name: Lint with ruff
         run: ruff check custom_components/shabman tests/
@@ -44,8 +40,7 @@ jobs:
         env:
           PYTEST_HA_CLEANUP: '0'
           PYTEST_HA_THREADLEAK: '0'
-        run: |
-          pytest tests/ -v --cov=custom_components.shabman --cov-report=xml --cov-report=term-missing
+        run: pytest tests/ -v --cov=custom_components.shabman --cov-report=xml --cov-report=term-missing
 
       - name: Upload coverage to Codecov
         if: matrix.python-version == '3.12'
