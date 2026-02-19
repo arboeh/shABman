@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "shabman"
 version = "0.5.0-beta"
-description = "Shelly Script Manager for Home Assistant"
+description = "Shelly Script-Manager for Home Assistant"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
