@@ -59,5 +59,3 @@ jobs:
 
       - name: Hassfest Validation
         uses: home-assistant/actions/hassfest@master
-        with:
-          fail_ci_if_error: false
