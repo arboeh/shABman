@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "shABman Setup",
-        "description": "Enter the IP address of your Shelly Gen2 Device",
+        "description": "Enter the IP address of your Shelly Gen2 or Gen3 Device",
         "data": {
           "device_ip": "Device IP Address"
         }
@@ -61,8 +61,7 @@
       },
       "confirm_delete": {
         "title": "Confirm Deletion",
-        "description": "Do you really want to delete the script?",
-        "data": {}
+        "description": "Do you really want to delete the script?"
       }
     },
     "error": {

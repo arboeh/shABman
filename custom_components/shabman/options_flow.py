@@ -26,7 +26,7 @@ class ShABmanOptionsFlow(config_entries.OptionsFlow):
         """Initialize options flow."""
         self._config_entry = config_entry
         self._current_script_id: int | None = None
-        self._current_script_code: str | None = None  # Cache for current edit session
+        self._current_script_code: str | None = None
 
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Manage the options - main menu."""
@@ -112,38 +112,12 @@ class ShABmanOptionsFlow(config_entries.OptionsFlow):
             name = user_input["name"]
             code = user_input["code"]
 
-            # BACKUP: Save original script data (from cached code!)
+            # BACKUP: Save original script data
             backup_name = script.get("name", "")
-            backup_code = self._current_script_code  # Use cached original code
+            backup_code = self._current_script_code
             backup_id = self._current_script_id
 
-            _LOGGER.info(f"Editing script '{backup_name}' (ID: {backup_id}). Creating backup...")
-
-            # Save backup to file (persistent)
-            try:
-                import json
-                from datetime import datetime
-                from pathlib import Path
-
-                backup_dir = Path(self.hass.config.path("shabman_backups"))
-                backup_dir.mkdir(exist_ok=True)
-
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                backup_file = backup_dir / f"script_{backup_id}_{timestamp}.json"
-
-                backup_data = {
-                    "id": backup_id,
-                    "name": backup_name,
-                    "code": backup_code,
-                    "timestamp": timestamp,
-                }
-
-                with open(backup_file, "w", encoding="utf-8") as f:
-                    json.dump(backup_data, f, indent=2, ensure_ascii=False)
-
-                _LOGGER.info(f"Created persistent backup: {backup_file}")
-            except Exception as err:
-                _LOGGER.error(f"Failed to create persistent backup: {err}")
+            await self._create_script_backup(backup_id, backup_name, "edit")
 
             # Delete old script
             delete_success = await coordinator.delete_script(self._current_script_id)
@@ -218,7 +192,7 @@ class ShABmanOptionsFlow(config_entries.OptionsFlow):
                     },
                 )
 
-        # 🔥 Load script code on-demand (only when opening the form)
+        # Load script code on-demand (only when opening the form)
         if self._current_script_code is None:
             _LOGGER.debug(f"Loading code for script {self._current_script_id}")
             self._current_script_code = await coordinator.get_script_code(self._current_script_id)
@@ -273,7 +247,7 @@ class ShABmanOptionsFlow(config_entries.OptionsFlow):
                             options=script_options,
                             mode=selector.SelectSelectorMode.DROPDOWN,
                         )
-                    ),
+                    )
                 }
             ),
         )
@@ -288,7 +262,12 @@ class ShABmanOptionsFlow(config_entries.OptionsFlow):
         if not script:
             return self.async_abort(reason="script_not_found")
 
+        # Backup
+        script_name = script.get("name", "Unknown")
+        await self._create_script_backup(self._current_script_id, script_name, "delete")
+
         if user_input is not None:
+            # Delete
             result = await coordinator.delete_script(self._current_script_id)
             if result:
                 await coordinator.async_request_refresh()
@@ -304,3 +283,52 @@ class ShABmanOptionsFlow(config_entries.OptionsFlow):
                 "script_id": str(self._current_script_id),
             },
         )
+
+    async def _create_script_backup(
+        self, script_id: int, script_name: str, reason: str = "manual", max_backups: int = 10
+    ) -> bool:
+        """Create persistent backup with automatic retention."""
+        coordinator: ShABmanCoordinator = self.hass.data[DOMAIN][self._config_entry.entry_id]
+
+        script_code = await coordinator.get_script_code(script_id)
+        if script_code is None:
+            _LOGGER.warning(f"Cannot backup script {script_id}: no code")
+            return False
+
+        try:
+            import json
+            from datetime import datetime
+            from pathlib import Path
+
+            backup_dir = Path(self.hass.config.path("shabman_backups"))
+            backup_dir.mkdir(exist_ok=True)
+
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            backup_file = backup_dir / f"script_{script_id}_{reason}_{timestamp}.json"
+
+            backup_data = {
+                "id": script_id,
+                "name": script_name,
+                "code": script_code,
+                "timestamp": timestamp,
+                "reason": reason,
+            }
+
+            with open(backup_file, "w", encoding="utf-8") as f:
+                json.dump(backup_data, f, indent=2, ensure_ascii=False)
+
+            # RETENTION: Max 'max_backups' pro Script behalten
+            backup_pattern = backup_dir / f"script_{script_id}_*.json"
+            existing = sorted(backup_pattern.glob("*"), key=lambda x: x.stat().st_mtime)
+
+            while len(existing) >= max_backups:
+                oldest = existing.pop(0)
+                oldest.unlink()
+                _LOGGER.debug(f"Retention cleanup: removed {oldest}")
+
+            _LOGGER.info(f"Backup created ({len(existing) + 1}/{max_backups}): {backup_file.name}")
+            return True
+
+        except Exception as err:
+            _LOGGER.error(f"Backup failed for script {script_id}: {err}")
+            return False

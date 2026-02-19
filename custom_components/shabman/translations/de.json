@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "shABman Einrichtung",
-        "description": "Geben Sie die IP-Adresse Ihres Shelly Gen2-Gerätes ein",
+        "description": "Geben Sie die IP-Adresse Ihres Shelly Gen2- oder Gen3-Gerätes ein",
         "data": {
           "device_ip": "Geräte IP-Adresse"
         }
@@ -61,8 +61,7 @@
       },
       "confirm_delete": {
         "title": "Löschen bestätigen",
-        "description": "Möchten Sie das Script wirklich löschen?",
-        "data": {}
+        "description": "Möchten Sie das Script wirklich löschen?"
       }
     },
     "error": {

@@ -70,7 +70,7 @@ class ScriptStatusSwitch(CoordinatorEntity, SwitchEntity):
         self._attr_unique_id = f"{coordinator.device_ip}_script_{self._script_id}_status"
 
         # Entity properties
-        self._attr_name = f"{script['name']}"
+        self._attr_name = f"Status: {script['name']}"
         self._attr_has_entity_name = True
 
         # Device info for grouping
@@ -145,7 +145,7 @@ class ScriptAutostartSwitch(CoordinatorEntity, SwitchEntity):
         self._attr_unique_id = f"{coordinator.device_ip}_script_{self._script_id}_autostart"
 
         # Entity properties
-        self._attr_name = f"{script['name']} Run on Startup"
+        self._attr_name = f"Autostart: {script['name']}"
         self._attr_has_entity_name = True
 
         # Device info for grouping
