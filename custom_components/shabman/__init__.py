@@ -14,6 +14,9 @@ from homeassistant.helpers.typing import ConfigType
 
 from .const import DOMAIN
 from .coordinator import ShABmanCoordinator
+from .helpers import register_icon
+
+DOMAIN_ICON = "custom_components/shabman/icon.png"
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
@@ -85,7 +88,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data[DOMAIN][entry.entry_id] = coordinator
 
     # Start WebSocket listener for real-time updates
-    await coordinator.async_start_websocket()  # 🔥 NEU
+    await coordinator.async_start_websocket()
+
+    # Register icon
+    register_icon(hass)
 
     # Forward entry setup to platforms (creates entities)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)

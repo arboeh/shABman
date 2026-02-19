@@ -5,8 +5,10 @@
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/arboeh/shABman",
+  "icon": "custom_components/shabman/icon.png",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/arboeh/shABman/issues",
+  "logo": "custom_components/shabman/logo.png",
   "requirements": [],
   "version": "0.5.0-beta"
 }
