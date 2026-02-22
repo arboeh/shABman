@@ -4,7 +4,7 @@ on:
   push:
     branches: [main, dev]
   pull_request:
-    branches: [main, dev]
+    branches: [main]
 
 jobs:
   test:
@@ -12,7 +12,7 @@ jobs:
     timeout-minutes: 10
     strategy:
       matrix:
-        python-version: ['3.11']
+        python-version: ["3.11", "3.12"]
 
     steps:
       - name: Checkout code
@@ -31,22 +31,29 @@ jobs:
           pip install -e ".[test]"
 
       - name: Lint with ruff
-        run: ruff check custom_components/shabman tests/
+        run: |
+          ruff check custom_components/shabman tests/
+          ruff check --output-format=github .
 
       - name: Format check with ruff
         run: ruff format --check custom_components/shabman tests/
 
       - name: Run tests with pytest
         env:
-          PYTEST_HA_CLEANUP: '0'
-          PYTEST_HA_THREADLEAK: '0'
-        run: pytest tests/ -v --cov=custom_components.shabman --cov-report=xml --cov-report=term-missing
+          PYTEST_HA_CLEANUP: "0"
+          PYTEST_HA_THREADLEAK: "0"
+        run: |
+          pytest tests/ -v \
+            --cov=custom_components/shabman \
+            --cov-report=xml \
+            --cov-report=term-missing \
+            --cov-report=html
 
       - name: Upload coverage to Codecov
-        if: matrix.python-version == '3.12'
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
           fail_ci_if_error: false
 
   validate:

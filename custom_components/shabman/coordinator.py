@@ -23,23 +23,16 @@ class ShABmanCoordinator(DataUpdateCoordinator):
         super().__init__(
             hass,
             _LOGGER,
-            name="shabman",
+            name=DOMAIN,  # ← War "shabman", jetzt DOMAIN (const.py)
             update_interval=timedelta(seconds=30),
         )
         self.device_ip = config_entry.data[CONF_DEVICE_IP]
         self.device_type = config_entry.data[CONF_DEVICE_TYPE]
-        self.device_id = config_entry.data.get("device_id")  # <-- NEU!
+        self.device_id = config_entry.data.get("device_id")
         self.config_entry = config_entry
 
         self._ws_task = None  # WebSocket listener task
         self._ws_session = None
-
-        super().__init__(
-            hass,
-            _LOGGER,
-            name=DOMAIN,
-            update_interval=timedelta(seconds=30),  # Fallback polling
-        )
 
     async def _async_update_data(self) -> dict[str, any]:
         """Fetch data from the device."""

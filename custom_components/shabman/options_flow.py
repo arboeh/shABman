@@ -317,8 +317,7 @@ class ShABmanOptionsFlow(config_entries.OptionsFlow):
                 json.dump(backup_data, f, indent=2, ensure_ascii=False)
 
             # RETENTION: Max 'max_backups' pro Script behalten
-            backup_pattern = backup_dir / f"script_{script_id}_*.json"
-            existing = sorted(backup_pattern.glob("*"), key=lambda x: x.stat().st_mtime)
+            existing = sorted(backup_dir.glob(f"script_{script_id}_*.json"), key=lambda x: x.stat().st_mtime)
 
             while len(existing) >= max_backups:
                 oldest = existing.pop(0)

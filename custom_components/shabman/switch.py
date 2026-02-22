@@ -79,7 +79,6 @@ class ScriptStatusSwitch(CoordinatorEntity, SwitchEntity):
             "name": "Shelly Script Manager",
             "manufacturer": "Shelly",
             "model": coordinator.device_type,
-            "sw_version": "1.0",
         }
 
     @property
@@ -154,7 +153,6 @@ class ScriptAutostartSwitch(CoordinatorEntity, SwitchEntity):
             "name": "Shelly Script Manager",
             "manufacturer": "Shelly",
             "model": coordinator.device_type,
-            "sw_version": "1.0",
         }
 
     @property

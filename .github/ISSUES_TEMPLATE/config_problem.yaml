@@ -1,0 +1,23 @@
+name: "⚙️ Configuration Issue"
+description: "Issues with setup/configuration"
+labels: ["config", "triage"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "What's not working?"
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: "Integration configuration"
+      description: "Copy your shABman configuration from Settings → Devices & Services"
+      render: json
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Logs"
+      render: shell

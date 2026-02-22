@@ -1,21 +1,28 @@
 # Changelog
 
-## [v0.5.0-beta] - 2026-02-17
+## [v0.5.0-beta] - 2026-02-22
 
-### ✨ Features
+### Added
+- Vollständiger Options Flow: Create, Edit, Delete mit Backup
+- Rollback-Logik bei fehlgeschlagenen Uploads
+- Automatische Backup-Retention (max 10 pro Script)
+- WebSocket für Echtzeit-Updates
+- Services: upload_script, delete_script, list_scripts
+
+### Features
 
 - **Multiline Script Editor** im Config Flow
 - Script Count & Running Scripts Sensoren
 - Start/Stop/Autostart Switches pro Script
 - WebSocket Live-Updates
 
-### 🐛 Fixes
+### Fixes
 
 - Tests 100% Coverage
 - Flake8/Black konform
 - Gen2-only Warnung
 
-### 📦 HACS-ready
+### HACS-ready
 
 - Custom Repository vorbereitet
 - Brands Repo PR folgt

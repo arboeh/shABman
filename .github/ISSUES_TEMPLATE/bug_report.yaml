@@ -1,0 +1,91 @@
+name: "🐛 Bug Report"
+description: "Something isn't working as expected"
+labels: ["bug", "triage"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: "Description"
+      description: "What exactly happens? What should happen instead?"
+      placeholder: "When deleting a script, no backup is created..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: "Steps to reproduce"
+      description: "How can the bug be reproduced?"
+      placeholder: |
+        1. Add integration...
+        2. Delete script...
+        3. Error occurs...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: "Expected behavior"
+      placeholder: "A backup should be created in shabman_backups/"
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Logs"
+      description: |
+        HA logs with `logger.default: debug` and `logger.shabman: debug`.
+        Copy the last 50 lines after the error occurs.
+      render: shell
+      placeholder: |
+        ```
+        2026-02-22 12:00:00 ERROR (MainThread) [custom_components.shabman.coordinator] ...
+        ```
+
+  - type: dropdown
+    id: device
+    attributes:
+      label: "Shelly Device"
+      options:
+        - "Shelly Plus 1PM"
+        - "Shelly Pro 2PM"
+        - "Shelly Mini"
+        - "Other (please specify)"
+        - "Unknown"
+    validations:
+      required: true
+
+  - type: input
+    id: firmware
+    attributes:
+      label: "Firmware Version"
+      placeholder: "1.14.0-gXXXXXX"
+
+  - type: input
+    id: ha_version
+    attributes:
+      label: "Home Assistant Version"
+      placeholder: "2026.2.0"
+
+  - type: input
+    id: shabman_version
+    attributes:
+      label: "shABman Version"
+      placeholder: "0.5.0-beta"
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: "Browser (if UI issue)"
+      options:
+        - "Chrome"
+        - "Firefox"
+        - "Safari"
+        - "Edge"
+        - "Not applicable"
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: "Additional context"
+      placeholder: "Screenshots, network setup, etc."
