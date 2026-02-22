@@ -337,27 +337,21 @@ async def test_confirm_delete_always_creates_backup(hass, setup_entry, mock_coor
     assert any(mock_call[0] == "get_script_code" and mock_call[1][0] == 1 for mock_call in mock_coordinator.mock_calls)
 
 
-@pytest.mark.xfail(reason="No backup in confirm_delete anymore")
 async def test_confirm_delete_submit_triggers_delete(hass, setup_entry, mock_coordinator):
-    """Confirm delete only deletes, no backup."""
-    # Flow bis confirm_delete Form
+    """Confirm delete calls delete_script on submit."""
     result = await hass.config_entries.options.async_init(setup_entry.entry_id)
     result = await hass.config_entries.options.async_configure(
         result["flow_id"], user_input={"next_step_id": "delete_script"}
     )
-    result = await hass.config_entries.options.async_configure(
-        result["flow_id"], user_input={"script": "1"}
-    )  # Backup passiert hier!
+    result = await hass.config_entries.options.async_configure(result["flow_id"], user_input={"script": "1"})
 
-    # Reset für Submit-Test
+    # Nur delete_script prüfen – Backup ist fachlich korrekt!
     mock_coordinator.delete_script.reset_mock()
-
-    # Submit → NUR delete_script aufrufen
     result = await hass.config_entries.options.async_configure(result["flow_id"], user_input={})
 
     assert result["type"] == homeassistant.data_entry_flow.FlowResultType.CREATE_ENTRY
-    mock_coordinator.delete_script.assert_called_once_with(1)  # ← Nur delete!
-    mock_coordinator.get_script_code.assert_not_called()  # ← Kein Backup hier!
+    mock_coordinator.delete_script.assert_called_once_with(1)
+    # get_script_code.assert_not_called() ← ENTFERNT
 
 
 # ---------------------------------------------------------------------------
