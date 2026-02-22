@@ -139,7 +139,7 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
-MIT – see [LICENSE](LICENSE).
+MIT © [arboeh](https://github.com/arboeh) – see [LICENSE](LICENSE)
 
 [hacs-badge]: https://img.shields.io/badge/HACS-Custom-orange.svg
 [hacs-url]: https://hacs.xyz
