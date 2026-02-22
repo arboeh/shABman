@@ -95,6 +95,7 @@ celerybeat.pid
 .env
 .venv
 .venv-test/
+**uv.lock**
 env/
 venv/
 ENV/

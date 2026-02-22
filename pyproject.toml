@@ -10,6 +10,9 @@ description = "Shelly Script Manager for Home Assistant"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
+dependencies = [
+    "ruff==0.8.4",
+]
 
 [project.optional-dependencies]
 test = [
@@ -41,6 +44,7 @@ timeout = 30
 filterwarnings = [
     "ignore::DeprecationWarning",
     "ignore::PendingDeprecationWarning",
+    "ignore:.*VIRTUAL_ENV.*does not match.*:pytest_homeassistant_custom_component",
 ]
 addopts = ["-v", "--strict-markers", "--tb=short"]
 log_cli = true
@@ -50,6 +54,9 @@ log_cli_format = "%(levelname)-8s %(message)s"
 [tool.ruff]
 line-length = 120
 target-version = "py311"
+extend-select = [
+    "RUF100",  # Ruff-specific rules (0.8+)
+]
 
 [tool.ruff.lint]
 select = [
