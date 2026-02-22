@@ -1,6 +1,6 @@
 <img src="images/logo.svg" alt="jaABlu" height="40"/>
 
-🇬🇧 English | [🇩🇪 **Deutsch**](README.de.md)
+🇬🇧 **English** | [🇩🇪 Deutsch](README.de.md)
 
 ## Shelly Script Manager for Home Assistant
 
@@ -119,7 +119,6 @@ A maximum of **10 backups per script** are kept (oldest deleted automatically).
 ## Known Limitations (0.5.0-beta)
 
 - No authentication support for password-protected Shelly devices
-- Firmware version not reflected in device info (shows static value)
 - `iot_class` is set to `local_polling`; WebSocket push is used in addition but not exclusively
 
 ## Planned Features (future releases)

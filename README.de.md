@@ -1,6 +1,6 @@
 <img src="images/logo.svg" alt="jaABlu" height="40"/>
 
-🇩🇪 Deutsch | [🇬🇧 **English**](README.md)
+[🇬🇧 English](README.md) | 🇩🇪 **Deutsch**
 
 ## Shelly Script Manager für Home Assistant
 
@@ -118,7 +118,6 @@ config/shabman_backups/script_1_delete_20260222_121500.json
 ## Bekannte Einschränkungen (0.5.0-beta)
 
 - Keine Authentifizierung für passwortgeschützte Shelly-Geräte
-- Firmware-Version nicht im Device-Info (statischer Wert)
 - `iot_class` ist `local_polling`; WebSocket wird zusätzlich genutzt
 
 ## Geplante Features (zukünftige Versionen)
