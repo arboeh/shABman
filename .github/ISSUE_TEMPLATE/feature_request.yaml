@@ -1,3 +1,5 @@
+# .github\ISSUE_TEMPLATE\feature_request.yaml
+
 name: "🚀 Feature Request"
 description: "Suggest a new feature"
 labels: ["enhancement", "triage"]

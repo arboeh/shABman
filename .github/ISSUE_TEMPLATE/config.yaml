@@ -1,3 +1,5 @@
+# .github\ISSUE_TEMPLATE\config.yaml
+
 blank_issues_enabled: true
 contact_links:
   "💬 Questions & Support": https://github.com/arboeh/shABman/discussions

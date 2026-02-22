@@ -51,7 +51,6 @@ class ScriptCountSensor(CoordinatorEntity, SensorEntity):
             "name": "Shelly Script Manager",
             "manufacturer": "Shelly",
             "model": coordinator.device_type,
-            "sw_version": "1.0",
         }
 
     @property
@@ -79,7 +78,6 @@ class RunningScriptsSensor(CoordinatorEntity, SensorEntity):
             "name": "Shelly Script Manager",
             "manufacturer": "Shelly",
             "model": coordinator.device_type,
-            "sw_version": "1.0",
         }
 
     @property

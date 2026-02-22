@@ -4,8 +4,8 @@
 
 ## Shelly Script Manager for Home Assistant
 
-[![HACS Custom](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz)
 [![Home Assistant](https://img.shields.io/badge/Home%20Assistant-Integration-41BDF5?logo=home-assistant)](https://www.home-assistant.io/)
+[![HACS Custom](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://hacs.xyz)
 [![release](https://img.shields.io/github/v/release/arboeh/shABman?display_name=tag)](https://github.com/arboeh/shABman/releases/latest)
 [![Tests](https://github.com/arboeh/shABman/workflows/Tests/badge.svg)](https://github.com/arboeh/shABman/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/arboeh/shABman/blob/main/LICENSE)
