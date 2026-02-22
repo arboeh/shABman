@@ -221,7 +221,6 @@ class ShABmanOptionsFlow(config_entries.OptionsFlow):
     async def async_step_delete_script(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Delete a script - select which one."""
         coordinator: ShABmanCoordinator = self.hass.data[DOMAIN][self._config_entry.entry_id]
-
         scripts = coordinator.data.get("scripts", [])
 
         if not scripts:
@@ -232,7 +231,7 @@ class ShABmanOptionsFlow(config_entries.OptionsFlow):
             self._current_script_id = script_id
             return await self.async_step_confirm_delete()
 
-        # Create options for dropdown
+        # Dropdown...
         script_options = [
             selector.SelectOptionDict(value=str(script["id"]), label=f"{script['name']} (ID: {script['id']})")
             for script in scripts
@@ -255,18 +254,18 @@ class ShABmanOptionsFlow(config_entries.OptionsFlow):
     async def async_step_confirm_delete(self, user_input: dict[str, Any] | None = None) -> FlowResult:
         """Confirm script deletion."""
         coordinator: ShABmanCoordinator = self.hass.data[DOMAIN][self._config_entry.entry_id]
-
         scripts = coordinator.data.get("scripts", [])
         script = next((s for s in scripts if s["id"] == self._current_script_id), None)
 
         if not script:
             return self.async_abort(reason="script_not_found")
 
-        # Backup
-        script_name = script.get("name", "Unknown")
-        await self._create_script_backup(self._current_script_id, script_name, "delete")
-
         if user_input is not None:
+            # BACKUP
+            backup_name = script.get("name", "")
+            backup_id = self._current_script_id
+            await self._create_script_backup(backup_id, backup_name, "delete")
+
             # Delete
             result = await coordinator.delete_script(self._current_script_id)
             if result:
