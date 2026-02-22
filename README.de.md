@@ -13,23 +13,23 @@
 [![maintained](https://img.shields.io/maintenance/yes/2026)](https://github.com/arboeh/shABman/graphs/commit-activity)
 [![Shelly](https://img.shields.io/badge/Shelly-Gen2%2FGen3-00A1DF?logo=shelly)](https://shelly.cloud)
 
-> **⚠️ Beta-Version** – shABman 0.5.0-beta ist funktionsfähig, wird aber aktiv entwickelt.
+> **⚠️ Beta-Version** - shABman 0.5.0-beta ist funktionsfähig, wird aber aktiv entwickelt.
 > Erwarte Änderungen vor 1.0.0. Bitte melde Probleme auf GitHub.
 
-**shABman** ermöglicht das Verwalten von [Shelly Gen2/Gen3](https://shelly.cloud)-Scripts direkt aus Home Assistant – ohne die UI zu verlassen.
+**shABman** ermöglicht das Verwalten von [Shelly Gen2/Gen3](https://shelly.cloud)-Scripts direkt aus Home Assistant - ohne die UI zu verlassen.
 
 ## Funktionen
 
-- 📋 **Scripts anzeigen** – alle Scripts als HA-Entities
-- ✏️ **Scripts bearbeiten** – Name und Code über Options Flow
-- 📤 **Neue Scripts erstellen** – Upload mit Chunking (bis 4 KB/Chunk)
-- 🗑️ **Scripts löschen** – mit automatischer Sicherung vorher
-- 🔄 **Rollback bei Fehlern** – bei fehlgeschlagenem Edit wird Original wiederhergestellt
-- 💾 **Backup-Retention** – max. 10 Backups pro Script in `config/shabman_backups/`
-- ⚡ **Echtzeit-Updates** – WebSocket für sofortige Statusänderungen
-- 🔘 **Switch-Entities** – Start/Stop und Autostart pro Script
-- 📊 **Sensor-Entities** – Gesamtanzahl und laufende Scripts
-- 🛠️ **HA-Services** – `upload_script`, `delete_script`, `list_scripts`
+- 📋 **Scripts anzeigen** - alle Scripts als HA-Entities
+- ✏️ **Scripts bearbeiten** - Name und Code über Options Flow
+- 📤 **Neue Scripts erstellen** - Upload mit Chunking (bis 4 KB/Chunk)
+- 🗑️ **Scripts löschen** - mit automatischer Sicherung vorher
+- 🔄 **Rollback bei Fehlern** - bei fehlgeschlagenem Edit wird Original wiederhergestellt
+- 💾 **Backup-Retention** - max. 10 Backups pro Script in `config/shabman_backups/`
+- ⚡ **Echtzeit-Updates** - WebSocket für sofortige Statusänderungen
+- 🔘 **Switch-Entities** - Start/Stop und Autostart pro Script
+- 📊 **Sensor-Entities** - Gesamtanzahl und laufende Scripts
+- 🛠️ **HA-Services** - `upload_script`, `delete_script`, `list_scripts`
 
 ## Voraussetzungen
 
@@ -138,7 +138,7 @@ Siehe [CHANGELOG.md](CHANGELOG.md).
 
 ## Lizenz
 
-MIT © [arboeh](https://github.com/arboeh) – see [LICENSE](LICENSE)
+MIT © 2026 [arboeh](https://github.com/arboeh) - see [LICENSE](LICENSE)
 
 [hacs-badge]: https://img.shields.io/badge/HACS-Custom-orange.svg
 [hacs-url]: https://hacs.xyz

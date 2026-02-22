@@ -14,24 +14,24 @@
 [![Shelly](https://img.shields.io/badge/Shelly-Gen2%2FGen3-00A1DF?logo=shelly)](https://shelly.cloud)
 
 
-> **⚠️ Beta Release** – shABman 0.5.0-beta is functional but under active development.
+> **⚠️ Beta Release** - shABman 0.5.0-beta is functional but under active development.
 > Expect breaking changes before 1.0.0. Please report issues on GitHub.
 
 **shABman** lets you manage [Shelly Gen2/Gen3](https://shelly.cloud) scripts directly
-from Home Assistant – without leaving the UI.
+from Home Assistant - without leaving the UI.
 
 ## Features
 
-- 📋 **List scripts** – all scripts on your device as HA entities
-- ✏️ **Edit scripts** – modify name and code via the Options Flow UI
-- 📤 **Create scripts** – upload new scripts with chunked transfer (up to 4 KB/chunk)
-- 🗑️ **Delete scripts** – with automatic backup before deletion
-- 🔄 **Rollback on failure** – if an edit upload fails, the original is restored automatically
-- 💾 **Backup retention** – up to 10 backups per script in `config/shabman_backups/`
-- ⚡ **Real-time updates** – WebSocket connection for instant status changes
-- 🔘 **Switch entities** – start/stop scripts and toggle autostart per script
-- 📊 **Sensor entities** – total script count and running script count
-- 🛠️ **HA Services** – `upload_script`, `delete_script`, `list_scripts` for automations
+- 📋 **List scripts** - all scripts on your device as HA entities
+- ✏️ **Edit scripts** - modify name and code via the Options Flow UI
+- 📤 **Create scripts** - upload new scripts with chunked transfer (up to 4 KB/chunk)
+- 🗑️ **Delete scripts** - with automatic backup before deletion
+- 🔄 **Rollback on failure** - if an edit upload fails, the original is restored automatically
+- 💾 **Backup retention** - up to 10 backups per script in `config/shabman_backups/`
+- ⚡ **Real-time updates** - WebSocket connection for instant status changes
+- 🔘 **Switch entities** - start/stop scripts and toggle autostart per script
+- 📊 **Sensor entities** - total script count and running script count
+- 🛠️ **HA Services** - `upload_script`, `delete_script`, `list_scripts` for automations
 
 ## Requirements
 
@@ -139,7 +139,7 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
-MIT © [arboeh](https://github.com/arboeh) – see [LICENSE](LICENSE)
+MIT © 2026 [arboeh](https://github.com/arboeh) - see [LICENSE](LICENSE)
 
 [hacs-badge]: https://img.shields.io/badge/HACS-Custom-orange.svg
 [hacs-url]: https://hacs.xyz
