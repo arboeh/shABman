@@ -4,11 +4,13 @@
 
 from __future__ import annotations
 
+import importlib.metadata
 import logging
 
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import EVENT_HOMEASSISTANT_START
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers.typing import ConfigType
 
@@ -21,12 +23,11 @@ DOMAIN_ICON = "custom_components/shabman/icon.png"
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 _LOGGER = logging.getLogger(__name__)
-try:
-    from .__version__ import __version__
 
-    _LOGGER.info(f"shABman v{__version__} loaded")
-except ImportError:
-    pass
+try:
+    _LOGGER.info(f"shABman v{importlib.metadata.version('shabman')} loaded")
+except importlib.metadata.PackageNotFoundError:
+    _LOGGER.info("shABman dev loaded")
 
 # Platforms to set up
 PLATFORMS = ["switch", "sensor"]
