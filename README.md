@@ -13,7 +13,6 @@
 [![maintained](https://img.shields.io/maintenance/yes/2026)](https://github.com/arboeh/shABman/graphs/commit-activity)
 [![Shelly](https://img.shields.io/badge/Shelly-Gen2%2FGen3-00A1DF?logo=shelly)](https://shelly.cloud)
 
-
 > **⚠️ Beta Release** - shABman 0.5.0-beta is functional but under active development.
 > Expect breaking changes before 1.0.0. Please report issues on GitHub.
 
@@ -32,6 +31,11 @@ from Home Assistant - without leaving the UI.
 - 🔘 **Switch entities** - start/stop scripts and toggle autostart per script
 - 📊 **Sensor entities** - total script count and running script count
 - 🛠️ **HA Services** - `upload_script`, `delete_script`, `list_scripts` for automations
+- **🧪 Extensive Test Coverage**
+  - **88% Code Coverage** via pytest + pytest-homeassistant-custom-component
+  - Unit tests for **config flow, coordinator, entities, services**
+  - Mocked HTTP/WebSocket responses with `aioresponses`
+  - CI tests for **Python 3.11** (3.12 pending plugin fix)
 
 ## Requirements
 
@@ -43,60 +47,71 @@ from Home Assistant - without leaving the UI.
 
 **RPC Script API** (`rpc/Script.*`) available on **allen Gen2/Gen3** (Firmware 1.4.0+)
 
-| Device | Model ID | Firmware | Status | Type |
-|---|---|---|---|---|
-| ✅ **Shelly BLU Gateway** | `SNGW-BT01` | 1.4.0+ | **Tested** | Gateway |
-| 🟡 **Shelly Plus 1** | `SHPLG-1` | 1.4.0+ | Untested | Plus |
-| 🟡 **Shelly Plus 1PM** | `SHPLG-1PM` | 1.4.0+ | Untested | Plus |
-| 🟡 **Shelly Plus 1PM Mini G2** | `SHPLG-1M` | 1.4.0+ | Untested | Plus Mini |
-| 🟡 **Shelly Plus 2PM** | `SHPLG-2PM` | 1.4.0+ | Untested | Plus |
-| 🟡 **Shelly Plus Plug S** | `SHPLG-IS` | 1.4.0+ | Untested | Plus |
-| 🟡 **Shelly Plus Wall Outlet** | `SHPLG-WO` | 1.4.0+ | Untested | Plus |
-| 🟡 **Shelly Pro 1** | `SHPR-1` | 1.4.0+ | Untested | Pro |
-| 🟡 **Shelly Pro 1PM** | `SHPR-1PM` | 1.4.0+ | Untested | Pro |
-| 🟡 **Shelly Pro 2** | `SHPR-2` | 1.4.0+ | Untested | Pro |
-| 🟡 **Shelly Pro 2PM** | `SHPR-2PM` | 1.4.0+ | Untested | Pro |
-| 🟡 **Shelly Pro 4PM** | `SHPR-4PM` | 1.4.0+ | Untested | Pro |
-| 🟡 **Shelly 1 Mini Gen3** | `SH1MG3` | 1.6.0+ | Untested | Gen3 |
-| 🟡 **Shelly 1PM Mini Gen3** | `SH1PMMG3` | 1.6.0+ | Untested | Gen3 |
-| 🟡 **Shelly 2PM Mini Gen3** | `SH2PMMG3` | 1.6.0+ | Untested | Gen3 |
-| 🟡 **Shelly 2PM Gen3** | `SH2PMG3` | 1.6.0+ | Untested | Gen3 |
-| 🟡 **Shelly Dimmer Gen3** | `SHDMG3` | 1.6.0+ | Untested | Gen3 |
-| 🟡 **Shelly H&T Gen3** | `SHHTG3` | 1.6.0+ | Untested | Gen3 |
-| 🟡 **Shelly Wall Display** | `SHWSD` | 1.4.0+ | Untested | Plus |
-| 🟡 **Shelly Motion 2** | `SHBLUWG342` | 1.4.0+ | Untested | Battery |
-| 🟡 **Shelly Button 1** | `SHBTN1` | 1.4.0+ | Untested | Battery |
+| Device                         | Model ID     | Firmware | Status     | Type      |
+| ------------------------------ | ------------ | -------- | ---------- | --------- |
+| ✅ **Shelly BLU Gateway**      | `SNGW-BT01`  | 1.4.0+   | **Tested** | Gateway   |
+| 🟡 **Shelly Plus 1**           | `SHPLG-1`    | 1.4.0+   | Untested   | Plus      |
+| 🟡 **Shelly Plus 1PM**         | `SHPLG-1PM`  | 1.4.0+   | Untested   | Plus      |
+| 🟡 **Shelly Plus 1PM Mini G2** | `SHPLG-1M`   | 1.4.0+   | Untested   | Plus Mini |
+| 🟡 **Shelly Plus 2PM**         | `SHPLG-2PM`  | 1.4.0+   | Untested   | Plus      |
+| 🟡 **Shelly Plus Plug S**      | `SHPLG-IS`   | 1.4.0+   | Untested   | Plus      |
+| 🟡 **Shelly Plus Wall Outlet** | `SHPLG-WO`   | 1.4.0+   | Untested   | Plus      |
+| 🟡 **Shelly Pro 1**            | `SHPR-1`     | 1.4.0+   | Untested   | Pro       |
+| 🟡 **Shelly Pro 1PM**          | `SHPR-1PM`   | 1.4.0+   | Untested   | Pro       |
+| 🟡 **Shelly Pro 2**            | `SHPR-2`     | 1.4.0+   | Untested   | Pro       |
+| 🟡 **Shelly Pro 2PM**          | `SHPR-2PM`   | 1.4.0+   | Untested   | Pro       |
+| 🟡 **Shelly Pro 4PM**          | `SHPR-4PM`   | 1.4.0+   | Untested   | Pro       |
+| 🟡 **Shelly 1 Mini Gen3**      | `SH1MG3`     | 1.6.0+   | Untested   | Gen3      |
+| 🟡 **Shelly 1PM Mini Gen3**    | `SH1PMMG3`   | 1.6.0+   | Untested   | Gen3      |
+| 🟡 **Shelly 2PM Mini Gen3**    | `SH2PMMG3`   | 1.6.0+   | Untested   | Gen3      |
+| 🟡 **Shelly 2PM Gen3**         | `SH2PMG3`    | 1.6.0+   | Untested   | Gen3      |
+| 🟡 **Shelly Dimmer Gen3**      | `SHDMG3`     | 1.6.0+   | Untested   | Gen3      |
+| 🟡 **Shelly H&T Gen3**         | `SHHTG3`     | 1.6.0+   | Untested   | Gen3      |
+| 🟡 **Shelly Wall Display**     | `SHWSD`      | 1.4.0+   | Untested   | Plus      |
+| 🟡 **Shelly Motion 2**         | `SHBLUWG342` | 1.4.0+   | Untested   | Battery   |
+| 🟡 **Shelly Button 1**         | `SHBTN1`     | 1.4.0+   | Untested   | Battery   |
 
 > **✅ Tested**<br>
 > **🟡 Untested**: RPC API available, community testing welcome<br>
 > **Model ID**: `http://[IP]/rpc/Shelly.GetDeviceInfo`<br>
-> **[Device missing? Create Issue](https://github.com/arboeh/shABman/issues/new)
+> \*\*[Device missing? Create Issue](https://github.com/arboeh/shABman/issues/new)
 
 ## Screenshots
 
 ### ![Brand Selection](images/select_brand.png)<br>
-**Brand Recognition**
+
+**Brand Recognition**<br>
 shABman appears in device brand list
 
 ### ![Setup](images/setup.png)<br>
+
 **Setup Flow**<br>
 Enter your Shelly device IP → automatic validation
 
+### ![Device Created](images/device_created.png)<br>
+
+**Integration Ready**<br>
+Entities automatically created
+
 ### ![Overview](images/device_overview.png)<br>
+
 **Device Overview**<br>
-Sensors for script count + running scripts
+Added Shelly devices
 
 ### ![Script Menu](images/menu.png)<br>
+
 **Script Manager**<br>
 Create, edit, delete scripts via UI
 
 ### ![Editor](images/editor.png)<br>
+
 **Script Editor**<br>
 Full code editor with backup/rollback
 
-### ![Device Created](images/device_created.png)<br>
-**Integration Ready**<br>
-Entities automatically created
+### ![Overview](images/sensor_overview.png)<br>
+
+**Sensor Overview**<br>
+Sensors for script count + running scripts
 
 ## Installation via HACS
 
@@ -122,26 +137,27 @@ Entities automatically created
 
 After setup, open the integration options via **Configure** to manage scripts:
 
-| Option | Description |
-|---|---|
-| 📤 Create new script | Upload a new script by name and code |
-| ✏️ Manage scripts | Select and edit an existing script |
-| 🗑️ Delete script | Select and confirm deletion (backup created automatically) |
+| Option               | Description                                                |
+| -------------------- | ---------------------------------------------------------- |
+| 📤 Create new script | Upload a new script by name and code                       |
+| ✏️ Manage scripts    | Select and edit an existing script                         |
+| 🗑️ Delete script     | Select and confirm deletion (backup created automatically) |
 
 ## Entities
 
 For each script on the device, shABman creates:
 
-| Entity | Type | Description |
-|---|---|---|
-| `switch.shelly_script_manager_status_<name>` | Switch | Start / Stop script |
-| `switch.shelly_script_manager_autostart_<name>` | Switch | Enable / Disable autostart |
-| `sensor.shelly_script_manager_script_count` | Sensor | Total number of scripts |
-| `sensor.shelly_script_manager_running_scripts` | Sensor | Number of currently running scripts |
+| Entity                                          | Type   | Description                         |
+| ----------------------------------------------- | ------ | ----------------------------------- |
+| `switch.shelly_script_manager_status_<name>`    | Switch | Start / Stop script                 |
+| `switch.shelly_script_manager_autostart_<name>` | Switch | Enable / Disable autostart          |
+| `sensor.shelly_script_manager_script_count`     | Sensor | Total number of scripts             |
+| `sensor.shelly_script_manager_running_scripts`  | Sensor | Number of currently running scripts |
 
 ## Services
 
 ### `shabman.upload_script`
+
 ```yaml
 service: shabman.upload_script
 data:
@@ -151,6 +167,7 @@ data:
 ```
 
 ### `shabman.delete_script`
+
 ```yaml
 service: shabman.delete_script
 data:
@@ -159,11 +176,13 @@ data:
 ```
 
 ### `shabman.list_scripts`
+
 ```yaml
 service: shabman.list_scripts
 data:
   device_id: "shellyplus1pm-aabbccddeeff"
 ```
+
 Fires a `shabman_scripts_listed` event with the script list.
 
 ## Backups
