@@ -1,0 +1,79 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "shABman Setup",
+        "description": "Enter the IP address of your Shelly Gen2 or Gen3 Device",
+        "data": {
+          "device_ip": "Device IP Address"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to device",
+      "unsupported_device": "Device type not supported",
+      "unknown": "Unexpected error occurred",
+      "invalid_ip": "Invalid IPv4 address"
+    },
+    "abort": {
+      "already_configured": "Device is already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "shABman Script Manager",
+        "menu_options": {
+          "create_script": "📤 Create new script",
+          "manage_scripts": "✏️ Manage scripts",
+          "delete_script": "🗑️ Delete script"
+        }
+      },
+      "create_script": {
+        "title": "Create Script",
+        "description": "Enter script name and code",
+        "data": {
+          "name": "Script Name",
+          "code": "Script Code"
+        }
+      },
+      "manage_scripts": {
+        "title": "Select Script",
+        "description": "Choose a script to edit",
+        "data": {
+          "script": "Script"
+        }
+      },
+      "edit_script": {
+        "title": "Edit Script",
+        "description": "ID: {script_id} | Enabled: {enabled} | Running: {running}",
+        "data": {
+          "name": "Script Name",
+          "code": "Script Code"
+        }
+      },
+      "delete_script": {
+        "title": "Delete Script",
+        "description": "Select script to delete",
+        "data": {
+          "script": "Script"
+        }
+      },
+      "confirm_delete": {
+        "title": "Confirm Deletion",
+        "description": "Do you really want to delete the script?"
+      }
+    },
+    "error": {
+      "upload_failed": "Failed to upload script",
+      "update_failed": "Failed to delete old script version",
+      "update_failed_restored": "Update failed, but original script was restored successfully",
+      "update_failed_lost": "CRITICAL: Update failed and original script could not be restored! Check logs for backup data.",
+      "delete_failed": "Failed to delete script"
+    },
+    "abort": {
+      "no_scripts": "No scripts found on device",
+      "script_not_found": "Script not found"
+    }
+  }
+}
