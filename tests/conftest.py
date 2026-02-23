@@ -5,9 +5,10 @@
 import logging
 import uuid
 import warnings
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
+import pytest_socket
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 from pytest_homeassistant_custom_component.common import MockConfigEntry
@@ -37,8 +38,6 @@ def pytest_configure(config):
     import sys
 
     if "pytest_socket" in sys.modules:
-        import pytest_socket
-
         # Monkey-patch to disable socket blocking
         pytest_socket.socket_disabled = False
         pytest_socket.disable_socket = lambda *args, **kwargs: None
@@ -50,6 +49,19 @@ def pytest_configure(config):
 def auto_enable_custom_integrations(enable_custom_integrations):
     """Automatically enable custom integrations."""
     yield
+
+
+@pytest.fixture(autouse=True)
+def mock_aiohttp_resolver():
+    """
+    Mockt den ThreadedResolver von aiohttp, der den
+    _run_safe_shutdown_loop-Thread verursacht.
+    """
+    with patch(
+        "aiohttp.resolver.ThreadedResolver.close",
+        new_callable=AsyncMock,
+    ):
+        yield
 
 
 @pytest.fixture

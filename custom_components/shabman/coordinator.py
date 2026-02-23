@@ -150,18 +150,21 @@ class ShABmanCoordinator(DataUpdateCoordinator):
         try:
             url = f"http://{self.device_ip}/rpc/Script.List"
 
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url, timeout=10) as response:
+            connector = aiohttp.TCPConnector(resolver=aiohttp.resolver.ThreadedResolver())
+
+            async with aiohttp.ClientSession(connector=connector) as session:
+                async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as response:
                     if response.status == 200:
                         data = await response.json()
                         scripts = data.get("scripts", [])
-                        _LOGGER.info(f"Found {len(scripts)} scripts on device")
+                        _LOGGER.info("Found %s scripts on device", len(scripts))
                         return scripts
-                    else:
-                        _LOGGER.error(f"Failed to list scripts: {response.status}")
-                        return []
+
+                    _LOGGER.error("Failed to list scripts: %s", response.status)
+                    return []
+
         except Exception as err:
-            _LOGGER.error(f"Error listing scripts: {err}")
+            _LOGGER.error("Error listing scripts: %s", err)
             return []
 
     async def get_script_code(self, script_id: int) -> str | None:
