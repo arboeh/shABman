@@ -34,8 +34,68 @@
 ## Voraussetzungen
 
 - Home Assistant **2024.1+**
-- Shelly **Gen2 oder Gen3** (Plus, Pro, Mini Serie)
+- Shelly **Gen2 oder Gen3** Gerät (Firmware 1.4.0+)
 - Gerät lokal per IP erreichbar (HTTP)
+
+## Unterstützte Geräte
+
+**RPC Script API** (`rpc/Script.*`) verfügbar auf **allen Gen2/Gen3** (Firmware 1.4.0+)
+
+| Device | Model ID | Firmware | Status | Serie |
+|---|---|---|---|---|
+| ✅ **Shelly BLU Gateway** | `SNGW-BT01` | 1.4.0+ | **Getestet** | Gateway |
+| 🟡 **Shelly Plus 1** | `SHPLG-1` | 1.4.0+ | Nicht getestet | Plus |
+| 🟡 **Shelly Plus 1PM** | `SHPLG-1PM` | 1.4.0+ | Nicht getestet | Plus |
+| 🟡 **Shelly Plus 1PM Mini G2** | `SHPLG-1M` | 1.4.0+ | Nicht getestet | Plus Mini |
+| 🟡 **Shelly Plus 2PM** | `SHPLG-2PM` | 1.4.0+ | Nicht getestet | Plus |
+| 🟡 **Shelly Plus Plug S** | `SHPLG-IS` | 1.4.0+ | Nicht getestet | Plus |
+| 🟡 **Shelly Plus Wall Outlet** | `SHPLG-WO` | 1.4.0+ | Nicht getestet | Plus |
+| 🟡 **Shelly Pro 1** | `SHPR-1` | 1.4.0+ | Nicht getestet | Pro |
+| 🟡 **Shelly Pro 1PM** | `SHPR-1PM` | 1.4.0+ | Nicht getestet | Pro |
+| 🟡 **Shelly Pro 2** | `SHPR-2` | 1.4.0+ | Nicht getestet | Pro |
+| 🟡 **Shelly Pro 2PM** | `SHPR-2PM` | 1.4.0+ | Nicht getestet | Pro |
+| 🟡 **Shelly Pro 4PM** | `SHPR-4PM` | 1.4.0+ | Nicht getestet | Pro |
+| 🟡 **Shelly 1 Mini Gen3** | `SH1MG3` | 1.6.0+ | Nicht getestet | Gen3 |
+| 🟡 **Shelly 1PM Mini Gen3** | `SH1PMMG3` | 1.6.0+ | Nicht getestet | Gen3 |
+| 🟡 **Shelly 2PM Mini Gen3** | `SH2PMMG3` | 1.6.0+ | Nicht getestet | Gen3 |
+| 🟡 **Shelly 2PM Gen3** | `SH2PMG3` | 1.6.0+ | Nicht getestet | Gen3 |
+| 🟡 **Shelly Dimmer Gen3** | `SHDMG3` | 1.6.0+ | Nicht getestet | Gen3 |
+| 🟡 **Shelly H&T Gen3** | `SHHTG3` | 1.6.0+ | Nicht getestet | Gen3 |
+| 🟡 **Shelly Wall Display** | `SHWSD` | 1.4.0+ | Nicht getestet | Plus |
+| 🟡 **Shelly Motion 2** | `SHBLUWG342` | 1.4.0+ | Nicht getestet | Battery |
+| 🟡 **Shelly Button 1** | `SHBTN1` | 1.4.0+ | Nicht getestet | Battery |
+
+> **✅ Getestet**<br>
+> **🟡 Nicht getestet**: RPC API vorhanden, Community-Tests erwünscht<br>
+> **Model ID** abrufen: `http://[IP]/rpc/Shelly.GetDeviceInfo`<br>
+> **[Gerät fehlt? Issue erstellen](https://github.com/arboeh/shABman/issues/new)**
+
+## Screenshots
+
+### ![Marke](images/select_brand.png)<br>
+**Markenerkennung**<br>
+shABman erscheint in Geräteliste
+
+### ![Setup](images/setup.png)<br>
+**Einrichtung**<br>
+Shelly Geräte-IP eingeben → automatische Validierung
+
+### ![Übersicht](images/device_overview.png)<br>
+**Geräteübersicht**<br>
+Sensoren für Script-Anzahl + laufende Scripts
+
+### ![Script-Menü](images/menu.png)<br>
+**Script Manager**<br>
+Scripts erstellen, bearbeiten, löschen über UI
+
+### ![Editor](images/editor.png)<br>
+**Script Editor**<br>
+Vollständiger Code-Editor mit Backup/Rollback
+
+### ![Gerät erstellt](images/device_created.png)<br>
+**Integration bereit**<br>
+Entities werden automatisch erstellt
+
 
 ## Installation über HACS
 

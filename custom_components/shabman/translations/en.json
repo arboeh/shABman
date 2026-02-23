@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "shABman Setup",
-        "description": "Enter the IP address of your Shelly Gen2 or Gen3 Device",
+        "description": "Enter the IP address of your Shelly Gen2 or Gen3 Device: [Supported devices](https://github.com/arboeh/shABman)",
         "data": {
           "device_ip": "Device IP Address"
         }

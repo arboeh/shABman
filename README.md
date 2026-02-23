@@ -36,8 +36,67 @@ from Home Assistant - without leaving the UI.
 ## Requirements
 
 - Home Assistant **2024.1+**
-- Shelly **Gen2 or Gen3** device (e.g. Plus, Pro, Mini series)
+- Shelly **Gen2 or Gen3** device (Firmware 1.4.0+)
 - Device must be accessible via local IP (HTTP)
+
+## Supported Devices
+
+**RPC Script API** (`rpc/Script.*`) available on **allen Gen2/Gen3** (Firmware 1.4.0+)
+
+| Device | Model ID | Firmware | Status | Type |
+|---|---|---|---|---|
+| ✅ **Shelly BLU Gateway** | `SNGW-BT01` | 1.4.0+ | **Tested** | Gateway |
+| 🟡 **Shelly Plus 1** | `SHPLG-1` | 1.4.0+ | Untested | Plus |
+| 🟡 **Shelly Plus 1PM** | `SHPLG-1PM` | 1.4.0+ | Untested | Plus |
+| 🟡 **Shelly Plus 1PM Mini G2** | `SHPLG-1M` | 1.4.0+ | Untested | Plus Mini |
+| 🟡 **Shelly Plus 2PM** | `SHPLG-2PM` | 1.4.0+ | Untested | Plus |
+| 🟡 **Shelly Plus Plug S** | `SHPLG-IS` | 1.4.0+ | Untested | Plus |
+| 🟡 **Shelly Plus Wall Outlet** | `SHPLG-WO` | 1.4.0+ | Untested | Plus |
+| 🟡 **Shelly Pro 1** | `SHPR-1` | 1.4.0+ | Untested | Pro |
+| 🟡 **Shelly Pro 1PM** | `SHPR-1PM` | 1.4.0+ | Untested | Pro |
+| 🟡 **Shelly Pro 2** | `SHPR-2` | 1.4.0+ | Untested | Pro |
+| 🟡 **Shelly Pro 2PM** | `SHPR-2PM` | 1.4.0+ | Untested | Pro |
+| 🟡 **Shelly Pro 4PM** | `SHPR-4PM` | 1.4.0+ | Untested | Pro |
+| 🟡 **Shelly 1 Mini Gen3** | `SH1MG3` | 1.6.0+ | Untested | Gen3 |
+| 🟡 **Shelly 1PM Mini Gen3** | `SH1PMMG3` | 1.6.0+ | Untested | Gen3 |
+| 🟡 **Shelly 2PM Mini Gen3** | `SH2PMMG3` | 1.6.0+ | Untested | Gen3 |
+| 🟡 **Shelly 2PM Gen3** | `SH2PMG3` | 1.6.0+ | Untested | Gen3 |
+| 🟡 **Shelly Dimmer Gen3** | `SHDMG3` | 1.6.0+ | Untested | Gen3 |
+| 🟡 **Shelly H&T Gen3** | `SHHTG3` | 1.6.0+ | Untested | Gen3 |
+| 🟡 **Shelly Wall Display** | `SHWSD` | 1.4.0+ | Untested | Plus |
+| 🟡 **Shelly Motion 2** | `SHBLUWG342` | 1.4.0+ | Untested | Battery |
+| 🟡 **Shelly Button 1** | `SHBTN1` | 1.4.0+ | Untested | Battery |
+
+> **✅ Tested**<br>
+> **🟡 Untested**: RPC API available, community testing welcome<br>
+> **Model ID**: `http://[IP]/rpc/Shelly.GetDeviceInfo`<br>
+> **[Device missing? Create Issue](https://github.com/arboeh/shABman/issues/new)
+
+## Screenshots
+
+### ![Brand Selection](images/select_brand.png)<br>
+**Brand Recognition**
+shABman appears in device brand list
+
+### ![Setup](images/setup.png)<br>
+**Setup Flow**<br>
+Enter your Shelly device IP → automatic validation
+
+### ![Overview](images/device_overview.png)<br>
+**Device Overview**<br>
+Sensors for script count + running scripts
+
+### ![Script Menu](images/menu.png)<br>
+**Script Manager**<br>
+Create, edit, delete scripts via UI
+
+### ![Editor](images/editor.png)<br>
+**Script Editor**<br>
+Full code editor with backup/rollback
+
+### ![Device Created](images/device_created.png)<br>
+**Integration Ready**<br>
+Entities automatically created
 
 ## Installation via HACS
 
@@ -140,10 +199,3 @@ See [CHANGELOG.md](CHANGELOG.md).
 ## License
 
 MIT © 2026 [arboeh](https://github.com/arboeh) - see [LICENSE](LICENSE)
-
-[hacs-badge]: https://img.shields.io/badge/HACS-Custom-orange.svg
-[hacs-url]: https://hacs.xyz
-[version-badge]: https://img.shields.io/badge/version-0.5.0--beta-blue.svg
-[releases-url]: https://github.com/arboeh/shABman/releases
-[license-badge]: https://img.shields.io/badge/License-MIT-yellow.svg
-[license-url]: LICENSE
