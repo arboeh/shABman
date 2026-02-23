@@ -135,8 +135,8 @@ class ShABmanOptionsFlow(config_entries.OptionsFlow):
                     errors=errors,
                     description_placeholders={
                         "script_id": str(self._current_script_id),
-                        "enabled": "Ja" if script.get("enabled") else "Nein",
-                        "running": "Ja" if script.get("running") else "Nein",
+                        "enabled": "Yes" if script.get("enabled") else "No",
+                        "running": "Yes" if script.get("running") else "No",
                     },
                 )
 
@@ -187,8 +187,8 @@ class ShABmanOptionsFlow(config_entries.OptionsFlow):
                     errors=errors,
                     description_placeholders={
                         "script_id": str(backup_id),
-                        "enabled": "Ja" if script.get("enabled") else "Nein",
-                        "running": "Ja" if script.get("running") else "Nein",
+                        "enabled": "Yes" if script.get("enabled") else "No",
+                        "running": "Yes" if script.get("running") else "No",
                     },
                 )
 
@@ -213,8 +213,8 @@ class ShABmanOptionsFlow(config_entries.OptionsFlow):
             ),
             description_placeholders={
                 "script_id": str(self._current_script_id),
-                "enabled": "Ja" if script.get("enabled") else "Nein",
-                "running": "Ja" if script.get("running") else "Nein",
+                "enabled": "Yes" if script.get("enabled") else "No",
+                "running": "Yes" if script.get("running") else "No",
             },
         )
 
