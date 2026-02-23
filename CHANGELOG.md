@@ -3,29 +3,30 @@
 ## [v0.5.0-beta] - 2026-02-22
 
 ### Added
-- Vollständiger Options Flow: Create, Edit, Delete mit Backup
-- Rollback-Logik bei fehlgeschlagenen Uploads
-- Automatische Backup-Retention (max 10 pro Script)
-- WebSocket für Echtzeit-Updates
-- Services: upload_script, delete_script, list_scripts
+
+- Full Options Flow: Create, Edit, Delete with automatic backups
+- Rollback logic for failed uploads
+- Automatic backup retention (max 10 per script)
+- WebSocket for real-time updates
+- Services: `upload_script`, `delete_script`, `list_scripts`
 
 ### Features
 
-- **Multiline Script Editor** im Config Flow
-- Script Count & Running Scripts Sensoren
-- Start/Stop/Autostart Switches pro Script
-- WebSocket Live-Updates
+- **Multiline Script Editor** in Options Flow
+- Script Count & Running Scripts sensors
+- Start/Stop/Autostart switches per script
+- WebSocket live updates
 
 ### Fixes
 
-- Tests 100% Coverage
-- Flake8/Black konform
-- Gen2-only Warnung
+- **88% test coverage** with pytest
+- Flake8/Black compliant
+- Gen2-only warning
 
 ### HACS-ready
 
-- Custom Repository vorbereitet
-- Brands Repo PR folgt
+- Custom Repository configured
+- Brands Repo PR to follow
 
 ## [v0.1.0] - 2026-02-10 (Alpha)
 
