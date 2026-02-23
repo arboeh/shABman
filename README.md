@@ -1,4 +1,4 @@
-<img src="images/logo.svg" alt="jaABlu" height="40"/>
+![Logo](images/logo.svg)
 
 🇬🇧 **English** | [🇩🇪 Deutsch](README.de.md)
 
@@ -74,7 +74,7 @@ from Home Assistant - without leaving the UI.
 > **✅ Tested**<br>
 > **🟡 Untested**: RPC API available, community testing welcome<br>
 > **Model ID**: `http://[IP]/rpc/Shelly.GetDeviceInfo`<br>
-> \*\*[Device missing? Create Issue](https://github.com/arboeh/shABman/issues/new)
+> **Device missing -> [Create Issue](https://github.com/arboeh/shABman/issues/new)**
 
 ## Screenshots
 

@@ -1,4 +1,4 @@
-<img src="images/logo.svg" alt="jaABlu" height="40"/>
+![Logo](images/logo.svg)
 
 [🇬🇧 English](README.md) | 🇩🇪 **Deutsch**
 
@@ -73,7 +73,7 @@
 > **✅ Getestet**<br>
 > **🟡 Nicht getestet**: RPC API vorhanden, Community-Tests erwünscht<br>
 > **Model ID** abrufen: `http://[IP]/rpc/Shelly.GetDeviceInfo`<br>
-> **[Gerät fehlt? Issue erstellen](https://github.com/arboeh/shABman/issues/new)**
+> **Gerät fehlt -> [Issue erstellen](https://github.com/arboeh/shABman/issues/new)**
 
 ## Screenshots
 
