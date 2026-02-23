@@ -45,7 +45,7 @@ from Home Assistant - without leaving the UI.
 
 ## Supported Devices
 
-**RPC Script API** (`rpc/Script.*`) available on **allen Gen2/Gen3** (Firmware 1.4.0+)
+**RPC Script API** (`rpc/Script.*`) available on **all Gen2/Gen3** (Firmware 1.4.0+)
 
 | Device                         | Model ID     | Firmware | Status     | Type      |
 | ------------------------------ | ------------ | -------- | ---------- | --------- |
