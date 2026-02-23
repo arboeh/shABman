@@ -14,7 +14,7 @@ jobs:
     timeout-minutes: 10
     strategy:
       matrix:
-        python-version: ["3.11", "3.12"]
+        python-version: ["3.11"] # 3.12 später, wenn pytest-homeassistant fixt
 
     steps:
       - name: Checkout code
