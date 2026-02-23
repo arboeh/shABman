@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "shABman Einrichtung",
-        "description": "Geben Sie die IP-Adresse Ihres script-unterstützten Shelly Gen2/Gen3 Gerätes ein",
+        "description": "Geben Sie die IP-Adresse des script-fähigen Shelly Gen2/Gen3 Gerätes ein",
         "data": {
           "device_ip": "Geräte IP-Adresse"
         }
