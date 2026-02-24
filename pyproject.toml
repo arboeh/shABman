@@ -10,7 +10,7 @@ description = "Shelly Script Manager for Home Assistant"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
-dependencies = ["homeassistant>=2024.3.3", "ruff==0.8.4"]
+dependencies = ["homeassistant>=2024.3.3", "ruff==0.15.0"]
 
 [project.optional-dependencies]
 test = [
