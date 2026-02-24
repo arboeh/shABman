@@ -10,10 +10,7 @@ description = "Shelly Script Manager for Home Assistant"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
-dependencies = [
-    "homeassistant>=2024.3.3",
-    "ruff==0.8.4",
-]
+dependencies = ["homeassistant>=2024.3.3", "ruff==0.8.4"]
 
 [project.optional-dependencies]
 test = [
@@ -61,12 +58,12 @@ target-version = "py311"
 extend-select = ["RUF100"]
 ignore = ["F821"]
 select = [
-    "E", # pycodestyle errors
-    "F", # pyflakes
-    "W", # pycodestyle warnings
-    "I", # isort
+    "E",  # pycodestyle errors
+    "F",  # pyflakes
+    "W",  # pycodestyle warnings
+    "I",  # isort
     "UP", # pyupgrade
-    "B", # flake8-bugbear
+    "B",  # flake8-bugbear
 ]
 
 [tool.ruff.format]
