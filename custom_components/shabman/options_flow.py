@@ -303,7 +303,8 @@ class ShABmanOptionsFlow(config_entries.OptionsFlow):
             backup_dir.mkdir(exist_ok=True)
 
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            backup_file = backup_dir / f"script_{script_id}_{reason}_{timestamp}.json"
+            device_ip_safe = coordinator.device_ip.replace(".", "-")
+            backup_file = backup_dir / f"script_{device_ip_safe}_{script_id}_{reason}_{timestamp}.json"
 
             backup_data = {
                 "id": script_id,
@@ -311,20 +312,23 @@ class ShABmanOptionsFlow(config_entries.OptionsFlow):
                 "code": script_code,
                 "timestamp": timestamp,
                 "reason": reason,
+                "device_ip": coordinator.device_ip,
             }
 
             with open(backup_file, "w", encoding="utf-8") as f:
                 json.dump(backup_data, f, indent=2, ensure_ascii=False)
 
-            # RETENTION: Max 'max_backups' pro Script behalten
-            existing = sorted(backup_dir.glob(f"script_{script_id}_*.json"), key=lambda x: x.stat().st_mtime)
+            # Retention NACH dem Schreiben – jetzt ist backup_file bereits vorhanden
+            existing = sorted(
+                backup_dir.glob(f"script_{device_ip_safe}_{script_id}_*.json"), key=lambda x: x.stat().st_mtime
+            )
 
-            while len(existing) >= max_backups:
+            while len(existing) > max_backups:  # ← > statt >=
                 oldest = existing.pop(0)
                 oldest.unlink()
                 _LOGGER.debug(f"Retention cleanup: removed {oldest}")
 
-            _LOGGER.info(f"Backup created ({len(existing) + 1}/{max_backups}): {backup_file.name}")
+            _LOGGER.info(f"Backup created ({len(existing)}/{max_backups}): {backup_file.name}")
             return True
 
         except Exception as err:

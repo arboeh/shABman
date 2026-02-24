@@ -30,6 +30,7 @@ MOCK_SCRIPTS = [
 @pytest.fixture
 def mock_coordinator():
     coordinator = MagicMock()
+    coordinator.device_ip = "192.168.1.100"
     coordinator.data = {"scripts": MOCK_SCRIPTS}
     coordinator.upload_script = AsyncMock(return_value=True)
     coordinator.delete_script = AsyncMock(return_value=True)
@@ -400,3 +401,91 @@ async def test_confirm_delete_script_not_found(hass, setup_entry, mock_coordinat
 
     assert result["type"] == "abort"
     assert result["reason"] == "script_not_found"
+
+
+# ---------------------------------------------------------------------------
+# _create_script_backup
+# ---------------------------------------------------------------------------
+
+
+async def test_backup_filename_contains_device_ip(hass, setup_entry, mock_coordinator, tmp_path):
+    """Backup filename should include sanitized device IP."""
+    mock_coordinator.device_ip = "192.168.1.100"
+    mock_coordinator.get_script_code = AsyncMock(return_value="// backup code")
+
+    with patch.object(hass.config, "path", return_value=str(tmp_path)):
+        result = await hass.config_entries.options.async_init(setup_entry.entry_id)
+        result = await hass.config_entries.options.async_configure(
+            result["flow_id"], user_input={"next_step_id": "delete_script"}
+        )
+        result = await hass.config_entries.options.async_configure(result["flow_id"], user_input={"script": "1"})
+        result = await hass.config_entries.options.async_configure(result["flow_id"], user_input={})
+
+    backup_files = list(tmp_path.iterdir())
+    assert len(backup_files) == 1
+    assert "192-168-1-100" in backup_files[0].name
+    assert "_1_" in backup_files[0].name
+    assert "_delete_" in backup_files[0].name
+
+
+async def test_backup_json_contains_device_ip(hass, setup_entry, mock_coordinator, tmp_path):
+    """Backup JSON content should include device_ip field."""
+    import json
+
+    mock_coordinator.device_ip = "192.168.1.100"
+    mock_coordinator.get_script_code = AsyncMock(return_value="// backup code")
+
+    with patch.object(hass.config, "path", return_value=str(tmp_path)):
+        result = await hass.config_entries.options.async_init(setup_entry.entry_id)
+        result = await hass.config_entries.options.async_configure(
+            result["flow_id"], user_input={"next_step_id": "delete_script"}
+        )
+        result = await hass.config_entries.options.async_configure(result["flow_id"], user_input={"script": "1"})
+        result = await hass.config_entries.options.async_configure(result["flow_id"], user_input={})
+
+    backup_file = list(tmp_path.iterdir())[0]
+    with open(backup_file, encoding="utf-8") as f:
+        data = json.load(f)
+
+    assert data["device_ip"] == "192.168.1.100"
+    assert data["id"] == 1
+    assert data["code"] == "// backup code"
+    assert data["reason"] == "delete"
+
+
+async def test_backup_retention_respects_device_ip(hass, setup_entry, mock_coordinator, tmp_path):
+    """Retention should only count backups for the same device + script."""
+    import json
+    import os
+
+    mock_coordinator.device_ip = "192.168.1.100"
+    mock_coordinator.get_script_code = AsyncMock(return_value="// code")
+
+    backup_dir = tmp_path / "shabman_backups"
+    backup_dir.mkdir()
+
+    # Pre-populate 10 existing backups mit echtem mtime-Abstand
+    for i in range(10):
+        ts = f"20260101_12000{i}"
+        f = backup_dir / f"script_192-168-1-100_1_delete_{ts}.json"
+        f.write_text(json.dumps({"id": 1, "code": "x"}), encoding="utf-8")
+        os.utime(f, (i * 10, i * 10))
+
+    # Backup für anderes Gerät
+    other = backup_dir / "script_10-0-0-1_1_delete_20260101_120000.json"
+    other.write_text(json.dumps({"id": 1, "code": "x"}), encoding="utf-8")
+
+    # Direkt auf das shabman_backups-Subdir patchen!
+    with patch.object(hass.config, "path", return_value=str(backup_dir)):
+        result = await hass.config_entries.options.async_init(setup_entry.entry_id)
+        result = await hass.config_entries.options.async_configure(
+            result["flow_id"], user_input={"next_step_id": "delete_script"}
+        )
+        result = await hass.config_entries.options.async_configure(result["flow_id"], user_input={"script": "1"})
+        result = await hass.config_entries.options.async_configure(result["flow_id"], user_input={})
+
+    remaining = list(backup_dir.glob("script_192-168-1-100_1_*.json"))
+    other_remaining = list(backup_dir.glob("script_10-0-0-1_*.json"))
+
+    assert len(remaining) == 10
+    assert len(other_remaining) == 1
