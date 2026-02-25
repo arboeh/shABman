@@ -38,15 +38,7 @@ async def async_register_icon(hass: HomeAssistant, icon_filename: str = "icon.pn
 
     try:
         if HAS_NEW_API:
-            await hass.http.async_register_static_paths(
-                [
-                    StaticPathConfig(
-                        url_path="/api/shabman/icon",
-                        path=str(icon_path),
-                        cache_headers=True,
-                    )
-                ]
-            )
+            await hass.http.async_register_static_paths([StaticPathConfig("/api/shabman/icon", str(icon_path), True)])
             _LOGGER.info("Icon registered (new API): %s", icon_path)
         else:
             hass.http.register_static_path("/api/shabman/icon", str(icon_path), cache_seconds=3600)
