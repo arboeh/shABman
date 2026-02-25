@@ -13,7 +13,7 @@
 [![maintained](https://img.shields.io/maintenance/yes/2026)](https://github.com/arboeh/shABman/graphs/commit-activity)
 [![Shelly](https://img.shields.io/badge/Shelly-Gen2%2FGen3-00A1DF?logo=shelly)](https://shelly.cloud)
 
-> **⚠️ Beta-Version** - shABman 0.5.1-beta ist funktionsfähig, wird aber aktiv entwickelt.
+> **⚠️ Beta-Version** - shABman 0.5.2-beta ist funktionsfähig, wird aber aktiv entwickelt.
 > Erwarte Änderungen vor 1.0.0. Bitte melde Probleme auf GitHub.
 
 **shABman** ermöglicht das Verwalten von [Shelly Gen2/Gen3](https://shelly.cloud)-Scripts direkt aus Home Assistant - ohne die UI zu verlassen.
@@ -194,7 +194,7 @@ config/shabman_backups/script_1_delete_20260222_121500.json
 
 **Max. 10 Backups pro Script** (älteste werden automatisch gelöscht).
 
-## Bekannte Einschränkungen (0.5.1-beta)
+## Bekannte Einschränkungen (0.5.2-beta)
 
 - Keine Authentifizierung für passwortgeschützte Shelly-Geräte
 - `iot_class` ist `local_polling`; WebSocket wird zusätzlich genutzt
