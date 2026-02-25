@@ -35,7 +35,7 @@ jobs:
 
       - name: Install project + deps
         run: |
-          uv sync --test
+          uv sync --all-extras
 
       - name: Lint with ruff
         run: |
@@ -45,7 +45,7 @@ jobs:
       - name: Format check with ruff
         run: uv run ruff format --check custom_components/shabman tests/
 
-      - name: Run tests with pytest
+      - name: Run tests with uv
         run: |
           uv run pytest tests/ -v \
             --cov=custom_components/shabman \
