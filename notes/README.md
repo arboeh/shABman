@@ -9,15 +9,15 @@ Interne Anleitung zum Erstellen von **Development-Releases** und **öffentlichen
 ```
 shABman/
 ├── main        # 🌟 Production Releases (git tag v0.5.0)
-├── dev         # 🔧 Development & Beta-Releases (git tag v0.5.1-dev)
+├── dev         # 🔧 Development & Beta-Releases (git tag v0.5.2-dev)
 └── Remote: origin → https://github.com/arboeh/shABman
 ```
 
 **Workflow:**
 
 1. **Development** auf `dev` Branch
-2. **Beta-Releases** → `dev` → `git tag v0.5.1-dev`
-3. **Production** → Merge `dev → main` → `git tag v0.5.1`
+2. **Beta-Releases** → `dev` → `git tag v0.5.2-dev`
+3. **Production** → Merge `dev → main` → `git tag v0.5.2`
 
 ---
 
@@ -67,9 +67,9 @@ pre-commit run --all-files
 ```toml
 # pyproject.toml
 [project]
-version = "0.5.1-dev"  # ← Development/Beta
+version = "0.5.2-dev"  # ← Development/Beta
 # oder
-version = "0.5.1"      # ← Production
+version = "0.5.2"      # ← Production
 ```
 
 #### Automatische Synchronisation
@@ -98,7 +98,7 @@ Results: 83 passed, 0 failed
 ### 5. CHANGELOG.md aktualisieren
 
 ```markdown
-## [v0.5.1-dev] - 2026-02-24
+## [v0.5.2-dev] - 2026-02-24
 
 ### Added
 
@@ -114,7 +114,7 @@ Results: 83 passed, 0 failed
 
 ```powershell
 git add .
-git commit -m "feat: v0.5.1-dev (Backup IP + Retention Fix)"
+git commit -m "feat: v0.5.2-dev (Backup IP + Retention Fix)"
 git push origin dev
 ```
 
@@ -126,17 +126,17 @@ git push origin dev
 
 ```powershell
 git checkout dev
-git tag v0.5.1-dev
-git push origin v0.5.1-dev
+git tag v0.5.2-dev
+git push origin v0.5.2-dev
 ```
 
 ### 8. GitHub Release (Draft)
 
 ```
 GitHub → Releases → Draft new release
-├── Tag: v0.5.1-dev
+├── Tag: v0.5.2-dev
 ├── Branch: dev
-├── Title: shABman v0.5.1-dev
+├── Title: shABman v0.5.2-dev
 └── Notes: Copy aus CHANGELOG.md
 ```
 
@@ -151,7 +151,7 @@ GitHub → Releases → Draft new release
 ```powershell
 git checkout main
 git pull origin main
-git merge dev --no-ff -m "Release v0.5.1: Backup & Retention"
+git merge dev --no-ff -m "Release v0.5.2: Backup & Retention"
 ```
 
 ### 10. Finale Checks
@@ -165,7 +165,7 @@ pre-commit run --all-files
 ### 11. Production Tag
 
 ```powershell
-git tag -a v0.5.1 -m "shABman v0.5.1
+git tag -a v0.5.2 -m "shABman v0.5.2
 
 ### Added
 - Backup-Dateinamen mit Device-IP
@@ -178,7 +178,7 @@ git push origin main --tags
 ### 12. GitHub Release (Public)
 
 ```
-GitHub → Releases → v0.5.1 → Publish release
+GitHub → Releases → v0.5.2 → Publish release
 ├── Copy Changelog
 └── Assets: (optional) dist/*.zip
 ```
@@ -190,7 +190,7 @@ GitHub → Releases → v0.5.1 → Publish release
 ```powershell
 # Vor Release in HA testen:
 # 1. HACS → Custom Repository → shABman (dev Branch)
-# 2. v0.5.1-dev installieren
+# 2. v0.5.2-dev installieren
 # 3. Config backup → Update → Config restore prüfen
 # 4. Backup-Funktion testen (Edit → Fail → Rollback)
 ```
@@ -222,7 +222,7 @@ pre-commit install
 ### HACS zeigt alte Version
 
 ```
-GitHub → Releases → Latest muss v0.5.1 sein
+GitHub → Releases → Latest muss v0.5.2 sein
 HACS → Reload → Update verfügbar
 ```
 
@@ -233,27 +233,27 @@ HACS → Reload → Update verfügbar
 **Kopiere in GitHub Issue:**
 
 ```markdown
-## Release v0.5.1 Checklist
+## Release v0.5.2 Checklist
 
 ### Development (dev)
 
 - [ ] `.\scripts\test-local.ps1` ✅ 89% Coverage
 - [ ] `pre-commit run --all-files` ✅ passed
-- [ ] `pyproject.toml` version = "0.5.1"
+- [ ] `pyproject.toml` version = "0.5.2"
 - [ ] `.\scripts\sync-manifest.ps1` ✅
 - [ ] CHANGELOG.md aktualisiert
 - [ ] `git push origin dev`
 
 ### Beta Release
 
-- [ ] `git tag v0.5.1-dev`
+- [ ] `git tag v0.5.2-dev`
 - [ ] GitHub Release (Draft)
 
 ### Production (main)
 
 - [ ] `git merge dev → main`
 - [ ] Finale Tests ✅
-- [ ] `git tag v0.5.1`
+- [ ] `git tag v0.5.2`
 - [ ] `git push origin main --tags`
 - [ ] GitHub Release (Published)
 
@@ -275,13 +275,13 @@ git commit -m "feat: XYZ"
 git push origin dev
 
 # Beta Release
-git tag v0.5.1-dev
-git push origin v0.5.1-dev
+git tag v0.5.2-dev
+git push origin v0.5.2-dev
 
 # Production
 git checkout main
 git merge dev
-git tag v0.5.1
+git tag v0.5.2
 git push origin main --tags
 ```
 

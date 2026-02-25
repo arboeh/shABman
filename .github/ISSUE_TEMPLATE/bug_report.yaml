@@ -72,7 +72,7 @@ body:
     id: shabman_version
     attributes:
       label: "shABman Version"
-      placeholder: "0.5.1-beta"
+      placeholder: "0.5.2-beta"
 
   - type: dropdown
     id: browser
