@@ -1,4 +1,4 @@
-![Logo](images/logo.svg)
+![Logo](images/heading.svg)
 
 🇬🇧 **English** | [🇩🇪 Deutsch](README.de.md)
 
