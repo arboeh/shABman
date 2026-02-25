@@ -39,8 +39,8 @@ jobs:
 
       - name: Lint with ruff
         run: |
-          ruff check custom_components/shabman tests/
-          ruff check --output-format=github .
+          uv run ruff check custom_components/shabman tests/
+          uv run ruff check --output-format=github .
 
       - name: Format check with ruff
         run: uv run ruff format --check custom_components/shabman tests/
