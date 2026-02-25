@@ -1,5 +1,14 @@
 # Changelog
 
+## [v0.5.2-beta] - 2026-02-25
+
+### Fixes
+
+- **Icon registration fixed**: Resolved `StaticPathConfig.__init__() got an
+unexpected keyword argument 'local_file'` error by using positional arguments
+  for `StaticPathConfig(url_path, path, cache_headers)` in compliance with the
+  official HA 2024.6+ API
+
 ## [v0.5.1-beta] - 2026-02-24
 
 ### Added
