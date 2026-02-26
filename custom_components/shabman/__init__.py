@@ -10,15 +10,11 @@ import logging
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import EVENT_HOMEASSISTANT_START
 from homeassistant.core import HomeAssistant, ServiceCall
 from homeassistant.helpers.typing import ConfigType
 
 from .const import DOMAIN
 from .coordinator import ShABmanCoordinator
-from .helpers import async_register_icon
-
-DOMAIN_ICON = "custom_components/shabman/icon.png"
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
@@ -90,9 +86,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     # Start WebSocket listener for real-time updates
     await coordinator.async_start_websocket()
-
-    # Register icon
-    await async_register_icon(hass)
 
     # Forward entry setup to platforms (creates entities)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
