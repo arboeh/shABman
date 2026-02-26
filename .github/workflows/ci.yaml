@@ -2,12 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main, dev, shabman-hacs]
+    branches: [main, dev]
   pull_request:
     branches: [main]
-  schedule:
-    - cron: "0 0 * * *" # täglicher HACS-Check
-  workflow_dispatch:
 
 permissions:
   contents: read
