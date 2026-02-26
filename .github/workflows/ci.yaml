@@ -1,12 +1,13 @@
-# .github\workflows\ci.yaml
-
 name: CI
 
 on:
   push:
-    branches: [main, dev]
+    branches: [main, dev, shabman-hacs]
   pull_request:
     branches: [main]
+  schedule:
+    - cron: "0 0 * * *" # täglicher HACS-Check
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -17,7 +18,7 @@ jobs:
     timeout-minutes: 10
     strategy:
       matrix:
-        python-version: ["3.11"] # 3.12 später, wenn pytest-homeassistant fixt
+        python-version: ["3.11"]
 
     steps:
       - name: Checkout code
@@ -34,8 +35,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install project + deps
-        run: |
-          uv sync --all-extras
+        run: uv sync --all-extras
 
       - name: Lint with ruff
         run: |
@@ -66,6 +66,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+
+      - name: HACS validation
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        uses: hacs/action@main
+        with:
+          category: integration
 
       - name: Hassfest Validation
         uses: home-assistant/actions/hassfest@master
