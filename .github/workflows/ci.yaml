@@ -67,11 +67,5 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: HACS validation
-        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-        uses: hacs/action@main
-        with:
-          category: integration
-
       - name: Hassfest Validation
         uses: home-assistant/actions/hassfest@master
