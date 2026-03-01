@@ -13,7 +13,7 @@
 [![maintained](https://img.shields.io/maintenance/yes/2026)](https://github.com/arboeh/shABman/graphs/commit-activity)
 [![Shelly](https://img.shields.io/badge/Shelly-Gen2%2FGen3-00A1DF?logo=shelly)](https://shelly.cloud)
 
-> **⚠️ Beta Release** - shABman 0.5.2-beta is functional but under active development.
+> **⚠️ Beta Release** - shABman 0.5.3-beta is functional but under active development.
 > Expect breaking changes before 1.0.0. Please report issues on GitHub.
 
 **shABman** lets you manage [Shelly Gen2/Gen3](https://shelly.cloud) scripts directly

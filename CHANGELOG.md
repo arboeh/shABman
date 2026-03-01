@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.5.3-beta] - 2026-03-01
+
+### Changes
+
+- **Icon structure updated**: Icons (`icon.png`, `icon.svg`, `icon2x.png`)
+  relocated to `custom_components/shabman/images/` – compatible with HA 2026.03
+  and the updated brand icon standard
+- **Tests fully rewritten**: All test files (`test_switch.py`, `test_sensor.py`,
+  `test_service.py`, etc.) migrated to dynamic entity discovery via
+  `entity_registry`; fixtures and mocks unified for consistency
+
 ## [v0.5.2-beta] - 2026-02-25
 
 ### Fixes
